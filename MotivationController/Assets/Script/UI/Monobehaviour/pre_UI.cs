@@ -7,19 +7,11 @@ using UnityEngine.EventSystems;
 //UIパネルにつける
 public class pre_UI : MonoBehaviour
 {
-    [SerializeField] Pre_uiTransitionCondition[] _condition;//条件群
+    [SerializeField] UITransitinData[] _condition;//条件群
 
     //入力を受け付けない待ち時間
     TimeFlag isActiveWait=new TimeFlag();
-
-
-    private void Start()
-    {
-        foreach(var con in _condition)
-        {
-            con.InitAction();
-        }
-    }
+    
 
     private void OnEnable()
     {
@@ -36,7 +28,7 @@ public class pre_UI : MonoBehaviour
         //複数の遷移条件が達成された場合の処理を想定してない
         foreach(var con in _condition)
         {
-            if (con.PermitTransition)
+            if (con.PermitTransition())
             {
                 RunTransition(con.nextUI, con.isSelfActive);
                 break;

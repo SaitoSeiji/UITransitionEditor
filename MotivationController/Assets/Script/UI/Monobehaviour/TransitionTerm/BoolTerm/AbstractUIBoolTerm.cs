@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//UIの遷移条件　bool条件
 public abstract class AbstractUIBoolTerm : MonoBehaviour
 {
     [SerializeField]bool _isSatisfy;

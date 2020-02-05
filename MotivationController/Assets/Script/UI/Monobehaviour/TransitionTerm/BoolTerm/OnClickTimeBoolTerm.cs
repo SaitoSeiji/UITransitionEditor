@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+//ボタンを押した回数で条件達成
 public class OnClickTimeBoolTerm : AbstractUIBoolTerm
 {
-    [SerializeField] int _targetClickTime;
-    [SerializeField] int _nowClickTime;
+    [SerializeField] int _targetClickTime;//目標回数
+    [SerializeField] int _nowClickTime;//現在の回数
     [SerializeField] Button[] _clickTargets;
 
     protected override bool ConcreteTerm()
@@ -14,17 +15,13 @@ public class OnClickTimeBoolTerm : AbstractUIBoolTerm
         return _nowClickTime >= _targetClickTime;
     }
 
-    public void CountUp()
-    {
-        _nowClickTime++;
-    }
-
     protected override void InitAction()
     {
         base.InitAction();
+        //ボタンに条件を設定
         foreach(var btn in _clickTargets)
         {
-            btn.onClick.AddListener(() => CountUp());
+            btn.onClick.AddListener(() => _nowClickTime++);
         }
     }
 
