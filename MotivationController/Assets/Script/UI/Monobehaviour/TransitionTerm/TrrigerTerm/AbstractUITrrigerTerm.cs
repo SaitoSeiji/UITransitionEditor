@@ -4,7 +4,7 @@ using UnityEngine;
 
 //UIの遷移条件　トリガー条件を管理するクラス
 //具体定期なトリガー条件は子クラスで指定
-public abstract class AbstractUITrrigerTerm : MonoBehaviour
+public abstract class AbstractUITrrigerTerm : MonoBehaviour,IUICv_active
 {
     //SetSatisfyActionが呼ばれるタイミングを指定
     public enum CoalTiming_StaisfyAction
@@ -17,6 +17,12 @@ public abstract class AbstractUITrrigerTerm : MonoBehaviour
 
     Trriger satisfyTrriger = new Trriger();
     public Trriger SatisfyTrriger { get { return satisfyTrriger; }}//このクラスが指定する条件を満たしているか
+
+    //対象のUICanvasのstateがActiveになったら呼ばれる初期化関数
+    public void ActiveInitAction()
+    {
+        satisfyTrriger._Trriger = false;
+    }
 
     private void Awake()
     {

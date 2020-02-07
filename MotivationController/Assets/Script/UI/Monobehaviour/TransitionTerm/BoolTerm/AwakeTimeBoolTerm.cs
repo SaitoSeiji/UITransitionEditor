@@ -11,9 +11,9 @@ public class AwakeTimeBoolTerm : AbstractUIBoolTerm
     TimeFlag flag;
     
 
-    protected override void EnableAction()
+    public override void ActiveInitAction()
     {
-        base.EnableAction();
+        base.ActiveInitAction();
         flag = new TimeFlag();
         flag.StartWait(waitLength);
     }

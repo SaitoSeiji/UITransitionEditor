@@ -5,10 +5,10 @@ using UnityEngine;
 //UIの遷移条件と遷移先を保持するクラス
 //pre_UIが保持
 [System.Serializable]
-public class UITransitinData
+public class UITransitinData:IUICv_active
 {
     public bool isSelfActive;//trueなら遷移後もアクティブ
-    public GameObject nextUI;//遷移先
+    public UICanvasBase nextUI;//遷移先
     public UITransitionTerm[] _transitionTerms;//遷移条件 どれかが達成されればいい
 
     //遷移許可フラグ
@@ -28,6 +28,15 @@ public class UITransitinData
             return false;
         }
     }
+
+    public void ActiveInitAction()
+    {
+        foreach(var term in _transitionTerms)
+        {
+            term.ActiveInitAction();
+        }
+    }
+
 
     bool CheckSomeMeetTerm()
     {

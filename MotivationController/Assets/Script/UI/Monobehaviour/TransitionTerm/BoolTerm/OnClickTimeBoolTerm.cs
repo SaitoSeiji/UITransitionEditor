@@ -25,9 +25,9 @@ public class OnClickTimeBoolTerm : AbstractUIBoolTerm
         }
     }
 
-    protected override void EnableAction()
+    public override void ActiveInitAction()
     {
-        base.EnableAction();
+        base.ActiveInitAction();
         _nowClickTime = 0;
     }
 }

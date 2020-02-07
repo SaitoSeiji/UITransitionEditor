@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //UIの遷移条件　bool条件
-public abstract class AbstractUIBoolTerm : MonoBehaviour
+public abstract class AbstractUIBoolTerm : MonoBehaviour,IUICv_active
 {
     [SerializeField]bool _isSatisfy;
     public bool _IsSatisfy { get { return _isSatisfy; }private set { _isSatisfy = value; } }
@@ -13,10 +13,10 @@ public abstract class AbstractUIBoolTerm : MonoBehaviour
         InitAction();
     }
 
-    private void OnEnable()
-    {
-        EnableAction();
-    }
+    //private void OnEnable()
+    //{
+    //    ActiveInitAction();
+    //}
 
     private void Update()
     {
@@ -31,7 +31,8 @@ public abstract class AbstractUIBoolTerm : MonoBehaviour
         
     }
 
-    protected virtual void EnableAction()
+    //対象のUICanvasのstateがActiveになったら呼ばれる初期化関数
+    public virtual void ActiveInitAction()
     {
 
     }
