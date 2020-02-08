@@ -4,7 +4,7 @@ using UnityEngine;
 
 //UIの遷移条件　トリガー条件を管理するクラス
 //具体定期なトリガー条件は子クラスで指定
-public abstract class AbstractUITrrigerTerm : MonoBehaviour,IUICv_active
+public abstract class AbstractUITrrigerTerm : MonoBehaviour,IMessageTransporter
 {
     //SetSatisfyActionが呼ばれるタイミングを指定
     public enum CoalTiming_StaisfyAction
@@ -18,14 +18,10 @@ public abstract class AbstractUITrrigerTerm : MonoBehaviour,IUICv_active
     Trriger satisfyTrriger = new Trriger();
     public Trriger SatisfyTrriger { get { return satisfyTrriger; }}//このクラスが指定する条件を満たしているか
 
-    //対象のUICanvasのstateがActiveになったら呼ばれる初期化関数
-    public void ActiveInitAction()
-    {
-        satisfyTrriger._Trriger = false;
-    }
 
     private void Awake()
     {
+        SetTransportParent_privete();
         coalTiming = SetCoalTiming();
         if (coalTiming == CoalTiming_StaisfyAction.AWAKE)
         {
@@ -51,6 +47,18 @@ public abstract class AbstractUITrrigerTerm : MonoBehaviour,IUICv_active
             }
         }
     }
+    #region interfaceの実装
+    //対象のUICanvasのstateがActiveになったら呼ばれる初期化関数
+    public void TranspotMessage_uiActive()
+    {
+        satisfyTrriger._Trriger = false;
+    }
+    public void SetTransportParent_privete()
+    {
+        var parent = MessageTransporter.FindParentTransporter(transform);
+        if (parent != null) parent.SetMessageTarget(gameObject);
+    }
+    #endregion
 
     abstract protected bool SetSatisfyAction();//条件の達成を処理する関数
     abstract protected CoalTiming_StaisfyAction SetCoalTiming();//SetSatisfyActionが呼ばれるタイミングを指定

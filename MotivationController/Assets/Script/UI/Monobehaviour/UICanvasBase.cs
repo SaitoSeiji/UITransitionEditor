@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //UIの1ページを担当するCanvasにつける 及びそれを表す
-public class UICanvasBase : MonoBehaviour,IUICv_active
+public class UICanvasBase : MessageTransporter
 {
-    [SerializeField] UICanvasController _uiCtrl;//自動設置したい
+    UICanvasController _uiCtrl { get {return UICanvasController.Instance; } }
     [SerializeField] UITransitinData[] _condition;//条件群
 
     Canvas selfCanvas;//いらないかもしれない
@@ -28,10 +28,10 @@ public class UICanvasBase : MonoBehaviour,IUICv_active
         CLOSE//active=false
     }
     [SerializeField]UISTATE _nowUIState=UISTATE.CLOSE;
-    public UISTATE _NowUIState { get { return _nowUIState; } }
+    UISTATE _NowUIState { get { return _nowUIState; } }
 
     [SerializeField] bool canInput = false;
-    public bool CanInput
+    bool CanInput
     {
         get
         {
@@ -79,21 +79,18 @@ public class UICanvasBase : MonoBehaviour,IUICv_active
         }
     }
 
-    public void ChengeUIState(UISTATE state)
+    public void ChengeUIState(UISTATE nextState)
     {
-        if (state == UISTATE.ACTIVE&&_nowUIState!=UISTATE.ACTIVE)
+        if (nextState == UISTATE.ACTIVE&&_nowUIState!=UISTATE.ACTIVE)
         {
             ActiveInitAction();
         }
-        _nowUIState = state;
+        _nowUIState = nextState;
     }
 
     public void ActiveInitAction()
     {
         _isActiveWait.StartWait(0.5f);
-        foreach(var con in _condition)
-        {
-            con.ActiveInitAction();
-        }
+        SendMessage2Target();
     }
 }

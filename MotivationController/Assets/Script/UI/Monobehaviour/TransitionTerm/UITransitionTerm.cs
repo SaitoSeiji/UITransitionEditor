@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //UIの遷移条件を管理する
-public class UITransitionTerm : MonoBehaviour,IUICv_active
+[System.Serializable]
+public class UITransitionTerm
 {
-    [SerializeField] Transform termDataTran;//初期化用のtransform　_trrigerTermと_boolTermをつけておく
-
     //bool条件をすべて満たした状態で　トリガー条件を達成すると遷移可能
-    [SerializeField]AbstractUITrrigerTerm _trrigerTerm;
-    [SerializeField]List<AbstractUIBoolTerm> _boolTerms=new List<AbstractUIBoolTerm>(); //bool条件　複数設定可能
+    [SerializeField]protected AbstractUITrrigerTerm _trrigerTerm;
+    [SerializeField]protected List<AbstractUIBoolTerm> _boolTerms=new List<AbstractUIBoolTerm>(); //bool条件　複数設定可能
 
     //遷移の条件を満たしている
     public bool IsMeetTerms()
@@ -27,30 +26,6 @@ public class UITransitionTerm : MonoBehaviour,IUICv_active
         else
         {
             return false;
-        }
-    }
-    
-    public void ActiveInitAction()
-    {
-        _trrigerTerm.ActiveInitAction();
-        foreach(var bt in _boolTerms)
-        {
-            bt.ActiveInitAction();
-        }
-    }
-
-    //初期化用======================================
-
-    //termを初期化
-    [ContextMenu("setTerm")]
-    void SetTerm()
-    {
-        _trrigerTerm = termDataTran.GetComponent<AbstractUITrrigerTerm>();
-        if (!_trrigerTerm.enabled) _trrigerTerm = null;
-        _boolTerms = new List<AbstractUIBoolTerm>( termDataTran.GetComponents<AbstractUIBoolTerm>());
-        for(int i = _boolTerms.Count-1; i >= 0; i--)
-        {
-            if (!_boolTerms[i].enabled) _boolTerms.RemoveAt(i);
         }
     }
 }

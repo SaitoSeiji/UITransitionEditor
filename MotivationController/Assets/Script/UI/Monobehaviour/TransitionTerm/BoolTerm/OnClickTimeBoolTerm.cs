@@ -25,9 +25,8 @@ public class OnClickTimeBoolTerm : AbstractUIBoolTerm
         }
     }
 
-    public override void ActiveInitAction()
+    public override void TranspotMessage_uiActive()
     {
-        base.ActiveInitAction();
         _nowClickTime = 0;
     }
 }

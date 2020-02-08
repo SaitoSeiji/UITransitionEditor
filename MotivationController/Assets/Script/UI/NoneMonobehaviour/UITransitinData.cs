@@ -5,7 +5,7 @@ using UnityEngine;
 //UIの遷移条件と遷移先を保持するクラス
 //pre_UIが保持
 [System.Serializable]
-public class UITransitinData:IUICv_active
+public class UITransitinData
 {
     public bool isSelfActive;//trueなら遷移後もアクティブ
     public UICanvasBase nextUI;//遷移先
@@ -28,14 +28,7 @@ public class UITransitinData:IUICv_active
             return false;
         }
     }
-
-    public void ActiveInitAction()
-    {
-        foreach(var term in _transitionTerms)
-        {
-            term.ActiveInitAction();
-        }
-    }
+    
 
 
     bool CheckSomeMeetTerm()

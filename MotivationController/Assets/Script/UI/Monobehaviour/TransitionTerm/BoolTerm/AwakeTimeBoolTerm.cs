@@ -9,11 +9,9 @@ public class AwakeTimeBoolTerm : AbstractUIBoolTerm
     [SerializeField] float waitLength;
 
     TimeFlag flag;
-    
 
-    public override void ActiveInitAction()
+    public override void TranspotMessage_uiActive()
     {
-        base.ActiveInitAction();
         flag = new TimeFlag();
         flag.StartWait(waitLength);
     }

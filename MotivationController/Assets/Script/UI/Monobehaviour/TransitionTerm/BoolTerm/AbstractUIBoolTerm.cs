@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //UIの遷移条件　bool条件
-public abstract class AbstractUIBoolTerm : MonoBehaviour,IUICv_active
+public abstract class AbstractUIBoolTerm : MonoBehaviour,IMessageTransporter
 {
     [SerializeField]bool _isSatisfy;
     public bool _IsSatisfy { get { return _isSatisfy; }private set { _isSatisfy = value; } }
@@ -12,11 +12,6 @@ public abstract class AbstractUIBoolTerm : MonoBehaviour,IUICv_active
     {
         InitAction();
     }
-
-    //private void OnEnable()
-    //{
-    //    ActiveInitAction();
-    //}
 
     private void Update()
     {
@@ -30,18 +25,19 @@ public abstract class AbstractUIBoolTerm : MonoBehaviour,IUICv_active
         }
         
     }
-
-    //対象のUICanvasのstateがActiveになったら呼ばれる初期化関数
-    public virtual void ActiveInitAction()
-    {
-
-    }
-
     protected virtual void InitAction()
     {
-
+        SetTransportParent_privete();
+    }
+    #region interfaceの実装
+    public void SetTransportParent_privete()
+    {
+        var parent = MessageTransporter.FindParentTransporter(transform);
+        if (parent != null) parent.SetMessageTarget(this.gameObject);
     }
 
+    public abstract void TranspotMessage_uiActive();
+    #endregion
     //具体的な条件
     //満たされていればTrueなことが名前からわかりずらい
     protected abstract bool ConcreteTerm();
