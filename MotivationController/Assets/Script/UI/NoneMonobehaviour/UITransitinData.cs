@@ -41,4 +41,5 @@ public class UITransitinData
 
         return false;
     }
+
 }

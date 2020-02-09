@@ -8,7 +8,9 @@ public class UITransitionTerm
 {
     //bool条件をすべて満たした状態で　トリガー条件を達成すると遷移可能
     [SerializeField]protected AbstractUITrrigerTerm _trrigerTerm;
+    public AbstractUITrrigerTerm _TrrigerTerm { get { return _trrigerTerm; } }
     [SerializeField]protected List<AbstractUIBoolTerm> _boolTerms=new List<AbstractUIBoolTerm>(); //bool条件　複数設定可能
+    public List<AbstractUIBoolTerm> _BoolTerms { get { return _boolTerms; } }
 
     //遷移の条件を満たしている
     public bool IsMeetTerms()
@@ -28,4 +30,18 @@ public class UITransitionTerm
             return false;
         }
     }
+
+
+    #region Editor
+
+    public void AddBoolTerm(AbstractUIBoolTerm term)
+    {
+        _boolTerms.Add(term);
+    }
+
+    public void RemoveBoolTerm(int index)
+    {
+        _boolTerms.RemoveAt(index);
+    }
+    #endregion
 }

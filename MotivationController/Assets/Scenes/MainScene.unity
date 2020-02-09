@@ -601,8 +601,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _condition:
-  - isSelfActive: 1
-    nextUI: {fileID: 1891409732}
+  - isSelfActive: 0
+    nextUI: {fileID: 0}
+    _transitionTerms:
+    - _trrigerTerm: {fileID: 0}
+      _boolTerms:
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+  - isSelfActive: 0
+    nextUI: {fileID: 0}
     _transitionTerms:
     - _trrigerTerm: {fileID: 0}
       _boolTerms: []

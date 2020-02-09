@@ -5,8 +5,10 @@ using UnityEngine;
 //UIの1ページを担当するCanvasにつける 及びそれを表す
 public class UICanvasBase : MessageTransporter
 {
-    UICanvasController _uiCtrl { get {return UICanvasController.Instance; } }
-    [SerializeField] UITransitinData[] _condition;//条件群
+    UICanvasController _uiCtrl { get { return UICanvasController.Instance; } }
+    [SerializeField] List<UITransitinData> _condition;//条件群
+    public List<UITransitinData> _Condition { get { return _condition; } }
+    public int _ConditionCount { get { return _condition.Count; } }
 
     Canvas selfCanvas;//いらないかもしれない
     public Canvas SelfCanvas
