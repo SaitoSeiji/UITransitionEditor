@@ -6,11 +6,10 @@ using UnityEditor;
 
 public class UITermWIndow : WindowCreater
 {
-    //NodeSet _testNode=new NodeSet(new Vector2(50,50),new Vector2(100,100));
     UITransitionTerm _transitionData;
 
-    NodeSet _trrigerNode = new NodeSet(new Vector2(50, 50), new Vector2(150, 150),false,3);
-    NodeSet _boolNode = new NodeSet(new Vector2(400, 50), new Vector2(150, 150));
+    //SimpleNodeSet _trrigerNode = new SimpleNodeSet(new Vector2(50, 50), new Vector2(150, 150),false,3,colorCode:3);
+    BoolTermNodeSet _boolNode = new BoolTermNodeSet(new Vector2(400, 50), new Vector2(200, 150), colorCode:5);
 
     int _removeNumber;
 
@@ -22,8 +21,12 @@ public class UITermWIndow : WindowCreater
     public void OpenWindow(UITransitionTerm tranData)
     {
         _transitionData = tranData;
-        AddNode(_trrigerNode, 1);
-        AddNode(_boolNode, tranData._BoolTerms.Count);
+
+        //AddNode(_trrigerNode,new );
+        //_trrigerNode.AddCallback(()=>EditorGUILayout.LabelField("aa","aa"));
+
+        AddNode(_boolNode,CreateBoolNodeList(tranData._BoolTerms));
+
         ShowWindow();
     }
 
@@ -37,8 +40,8 @@ public class UITermWIndow : WindowCreater
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("add"))
         {
-            _transitionData.AddBoolTerm(null);
-            AddNode(_boolNode);
+            _transitionData.AddBoolTerm(BoolTermType.AwakeTime);
+            AddNode(_boolNode,new BoolTermNodeData(BoolTermType.AwakeTime,_transitionData,_transitionData._BoolTerms.Count-1));
         }
         if (GUILayout.Button("remove"))
         {
@@ -49,9 +52,20 @@ public class UITermWIndow : WindowCreater
         GUILayout.EndHorizontal();
 
         BeginWindows();
-        DrawNode(_trrigerNode,"トリガー",0);
+        //DrawNode(_trrigerNode,"トリガー",0);
         DrawNode(_boolNode,"ブール",10);
         EndWindows();
+    }
+
+     List<BoolTermNodeData> CreateBoolNodeList(List<AbstractUIBoolTerm> boolTerms)
+    {
+        var result = new List<BoolTermNodeData>();
+        for(int i=0;i<boolTerms.Count;i++)
+        {
+            var data = new BoolTermNodeData(boolTerms[i].GetTermType(),_transitionData,i);
+            result.Add(data);
+        }
+        return result;
     }
 }
 #endif

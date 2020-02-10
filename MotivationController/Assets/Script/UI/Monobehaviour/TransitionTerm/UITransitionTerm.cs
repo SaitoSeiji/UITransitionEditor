@@ -12,6 +12,8 @@ public class UITransitionTerm
     [SerializeField]protected List<AbstractUIBoolTerm> _boolTerms=new List<AbstractUIBoolTerm>(); //bool条件　複数設定可能
     public List<AbstractUIBoolTerm> _BoolTerms { get { return _boolTerms; } }
 
+    [SerializeField] GameObject targetTransform;
+
     //遷移の条件を満たしている
     public bool IsMeetTerms()
     {
@@ -34,14 +36,23 @@ public class UITransitionTerm
 
     #region Editor
 
-    public void AddBoolTerm(AbstractUIBoolTerm term)
+    public void AddBoolTerm(BoolTermType type)
     {
-        _boolTerms.Add(term);
+        var termType = AbstractUIBoolTerm.GetBoolTermType(type);
+        var abst= targetTransform.AddComponent(termType) as AbstractUIBoolTerm;
+        _boolTerms.Add(abst);
     }
 
     public void RemoveBoolTerm(int index)
     {
+        MonoBehaviour.DestroyImmediate(_boolTerms[index]);
         _boolTerms.RemoveAt(index);
+    }
+
+    public void SetBoolTerm(int index, BoolTermType type)
+    {
+        RemoveBoolTerm(index);
+        AddBoolTerm(type);
     }
     #endregion
 }

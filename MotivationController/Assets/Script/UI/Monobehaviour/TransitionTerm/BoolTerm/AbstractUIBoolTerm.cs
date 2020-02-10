@@ -2,6 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//コンクリートブールタームの種類を列挙
+//現状エディタ拡張で使用
+public enum BoolTermType
+{
+    AwakeTime,//activeになってからの時間で条件指定
+    OnClickTime//指定のボタンをクリックした回数で条件指定
+}
+
 //UIの遷移条件　bool条件
 public abstract class AbstractUIBoolTerm : MonoBehaviour,IMessageTransporter
 {
@@ -41,4 +49,19 @@ public abstract class AbstractUIBoolTerm : MonoBehaviour,IMessageTransporter
     //具体的な条件
     //満たされていればTrueなことが名前からわかりずらい
     protected abstract bool ConcreteTerm();
+
+    public abstract BoolTermType GetTermType();
+
+    public static System.Type GetBoolTermType(BoolTermType type)
+    {
+        switch (type)
+        {
+            case BoolTermType.AwakeTime:
+                return typeof(AwakeTimeBoolTerm);
+            case BoolTermType.OnClickTime:
+                return typeof(OnClickTimeBoolTerm);
+            default:
+                return null;
+        }
+    }
 }

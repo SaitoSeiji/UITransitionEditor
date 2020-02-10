@@ -6,9 +6,10 @@ using UnityEngine.UI;
 //ボタンを押した回数で条件達成
 public class OnClickTimeBoolTerm : AbstractUIBoolTerm
 {
-    [SerializeField] int _targetClickTime;//目標回数
+    [SerializeField]public int _targetClickTime;//目標回数
     [SerializeField] int _nowClickTime;//現在の回数
-    [SerializeField] Button[] _clickTargets;
+    [SerializeField] Button[] _clickTargets=new Button[1];
+    public Button _ClickTargetHead { get { return _clickTargets[0]; }set { _clickTargets[0] = value; } }
 
     protected override bool ConcreteTerm()
     {
@@ -28,5 +29,10 @@ public class OnClickTimeBoolTerm : AbstractUIBoolTerm
     public override void TranspotMessage_uiActive()
     {
         _nowClickTime = 0;
+    }
+
+    public override BoolTermType GetTermType()
+    {
+        return BoolTermType.OnClickTime;
     }
 }

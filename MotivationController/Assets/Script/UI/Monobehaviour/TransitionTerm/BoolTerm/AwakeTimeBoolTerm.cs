@@ -6,7 +6,8 @@ using UnityEngine;
 //指定時間を待たずに条件を満たすことがある
 public class AwakeTimeBoolTerm : AbstractUIBoolTerm
 {
-    [SerializeField] float waitLength;
+    //editorで使用するためにpublic　ほんとはパブリックにしたくない
+    public float waitLength;
 
     TimeFlag flag;
 
@@ -19,5 +20,10 @@ public class AwakeTimeBoolTerm : AbstractUIBoolTerm
     protected override bool ConcreteTerm()
     {
         return !flag.WaitNow;
+    }
+
+    public override BoolTermType GetTermType()
+    {
+        return BoolTermType.AwakeTime;
     }
 }
