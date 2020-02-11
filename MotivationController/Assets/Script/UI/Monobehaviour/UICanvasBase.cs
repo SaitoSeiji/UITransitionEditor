@@ -5,6 +5,7 @@ using UnityEngine;
 //UIの1ページを担当するCanvasにつける 及びそれを表す
 public class UICanvasBase : MessageTransporter
 {
+    [SerializeField] GameObject nullObject;
     UICanvasController _uiCtrl { get { return UICanvasController.Instance; } }
     [SerializeField] List<UITransitinData> _condition;//条件群
     public List<UITransitinData> _Condition { get { return _condition; } }
@@ -95,4 +96,29 @@ public class UICanvasBase : MessageTransporter
         _isActiveWait.StartWait(0.5f);
         SendMessage2Target();
     }
+
+    #region editor
+    public void InitConditionParent()
+    {
+        Transform termComPonent=transform.Find("conditions");
+        if (termComPonent == null)
+        {
+            termComPonent = Instantiate(nullObject).transform;
+            termComPonent.SetParent(transform);
+            termComPonent.name = "conditions";
+        }
+        for(int i = 0; i < _condition.Count; i++)
+        {
+            //nextUIがかぶるとダメ
+            Transform conditionParent = termComPonent.Find(_condition[i].nextUI.name);
+            if (conditionParent == null)
+            {
+                conditionParent = Instantiate(nullObject).transform;
+                conditionParent.SetParent(termComPonent);
+                conditionParent.name = _condition[i].nextUI.name;
+            }
+            _condition[i]._transitionTerms.SetTermComponentObject(conditionParent.gameObject);
+        }
+    }
+    #endregion
 }

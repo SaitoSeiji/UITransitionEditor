@@ -2,6 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum TrrigerType
+{
+    None,//非enable
+    Onclick//クリックすると反応
+}
+
 //UIの遷移条件　トリガー条件を管理するクラス
 //具体定期なトリガー条件は子クラスで指定
 public abstract class AbstractUITrrigerTerm : MonoBehaviour,IMessageTransporter
@@ -62,10 +68,27 @@ public abstract class AbstractUITrrigerTerm : MonoBehaviour,IMessageTransporter
 
     abstract protected bool SetSatisfyAction();//条件の達成を処理する関数
     abstract protected CoalTiming_StaisfyAction SetCoalTiming();//SetSatisfyActionが呼ばれるタイミングを指定
+    abstract public TrrigerType GetTrrigerType();
 
     //現状ボタンで呼ばれている
     protected void SetSatisfyTrriger(bool flag)
     {
         satisfyTrriger._Trriger = flag;
     }
+
+    #region editor
+
+    public static System.Type GetTrrigerTermType(TrrigerType type)
+    {
+        switch (type)
+        {
+            case TrrigerType.Onclick:
+                return typeof(OncliclUITrrigerTerm);
+            case TrrigerType.None:
+                return typeof(NoneUITrrigerTerm);
+            default:
+                return null;
+        }
+    }
+    #endregion
 }

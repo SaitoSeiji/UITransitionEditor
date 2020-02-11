@@ -9,7 +9,7 @@ public class UITransitinData
 {
     public bool isSelfActive;//trueなら遷移後もアクティブ
     public UICanvasBase nextUI;//遷移先
-    public UITransitionTerm[] _transitionTerms;//遷移条件 どれかが達成されればいい
+    public UITransitionTerm _transitionTerms;//遷移条件 どれかが達成されればいい
 
     //遷移許可フラグ
     //許可を確認したら必ず遷移するのでTrrigerになってる
@@ -34,11 +34,8 @@ public class UITransitinData
     bool CheckSomeMeetTerm()
     {
         //1つでも条件を満たしているものがあればtrue
-        foreach(var cond in _transitionTerms)
-        {
-            if (cond.IsMeetTerms()) return true;
-        }
-
+        if (_transitionTerms.IsMeetTerms()) return true;
+        
         return false;
     }
 

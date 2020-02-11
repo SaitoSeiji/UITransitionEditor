@@ -12,7 +12,7 @@ public class UITransitionTerm
     [SerializeField]protected List<AbstractUIBoolTerm> _boolTerms=new List<AbstractUIBoolTerm>(); //bool条件　複数設定可能
     public List<AbstractUIBoolTerm> _BoolTerms { get { return _boolTerms; } }
 
-    [SerializeField] GameObject targetTransform;
+    [HideInInspector,SerializeField] GameObject termComponentObject;
 
     //遷移の条件を満たしている
     public bool IsMeetTerms()
@@ -35,11 +35,33 @@ public class UITransitionTerm
 
 
     #region Editor
+    #region trrigerTerm
 
+    public AbstractUITrrigerTerm AddTrrigerTerm(TrrigerType type)
+    {
+        var termType = AbstractUITrrigerTerm.GetTrrigerTermType(type);
+        var abst = termComponentObject.AddComponent(termType) as AbstractUITrrigerTerm;
+        _trrigerTerm = abst;
+        return abst;
+    }
+    void RemoveTrrigerTerm(AbstractUITrrigerTerm term)
+    {
+        //_boolTermsに所属していないとエラーを吐きそうだが対策をしていない
+        MonoBehaviour.DestroyImmediate(term);
+    }
+
+    public AbstractUITrrigerTerm SetTrrigerTerm(AbstractUITrrigerTerm term, TrrigerType type)
+    {
+            RemoveTrrigerTerm(term);
+            var result = AddTrrigerTerm(type);
+            return result;
+    }
+    #endregion
+    #region boolTerm
     public AbstractUIBoolTerm AddBoolTerm(BoolTermType type)
     {
         var termType = AbstractUIBoolTerm.GetBoolTermType(type);
-        var abst= targetTransform.AddComponent(termType) as AbstractUIBoolTerm;
+        var abst= termComponentObject.AddComponent(termType) as AbstractUIBoolTerm;
         _boolTerms.Add(abst);
         return abst;
     }
@@ -67,6 +89,10 @@ public class UITransitionTerm
         var result= AddBoolTerm(type);
         return result;
     }
-    
+    #endregion
+    public void SetTermComponentObject(GameObject obj)
+    {
+        termComponentObject = obj;
+    }
     #endregion
 }

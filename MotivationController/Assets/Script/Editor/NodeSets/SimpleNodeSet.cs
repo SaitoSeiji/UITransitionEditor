@@ -14,6 +14,10 @@ public class SimpleNodeSet : NodeSet<SimpleNodeData>
         : base(firstPos, nodeSize, arrangeX, arrangeCount, colorCode)
     {
     }
+
+    public override void AddNode()
+    {
+    }
 }
 
 public class SimpleNodeData : NodeData

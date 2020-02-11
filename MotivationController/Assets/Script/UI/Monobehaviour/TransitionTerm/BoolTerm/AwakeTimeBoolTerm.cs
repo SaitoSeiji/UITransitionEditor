@@ -19,6 +19,8 @@ public class AwakeTimeBoolTerm : AbstractUIBoolTerm
 
     protected override bool ConcreteTerm()
     {
+        if (flag == null) TranspotMessage_uiActive();
+
         return !flag.WaitNow;
     }
 

@@ -48,18 +48,18 @@ public abstract class NodeSet<T>
     //    _rectList.RemoveAt(index);
     //}
 
-    public Rect GetRect(int index)
+    Rect GetRect(int index)
     {
         return _nodeList[index].GetRect();
     }
 
-    public void SetRect(int index, Rect rect)
+    void SetRect(int index, Rect rect)
     {
         //_rectList[index] = rect;
         _nodeList[index].SetRect(rect);
     }
 
-    public void ResetRect()
+    void ResetRect()
     {
         for (int i = 0; i < _nodeList.Count; i++)
         {
@@ -86,13 +86,21 @@ public abstract class NodeSet<T>
     }
 
     #endregion
-    public string GetColorCodeString()
+    string GetColorCodeString()
     {
         return "flow node " + _colorCode;
     }
     #region node関連
 
-    public void AddNode(T nodeData)
+    protected void RawAddNode(List<T> data)
+    {
+        for (int i = 0; i < data.Count; i++)
+        {
+            RawAddNode(data[i]);
+        }
+    }
+
+    protected void RawAddNode(T nodeData)
     {
         //ノードのrectの計算
         Rect makeRect = CaliculateRect(GetInitRect(), _arrangeX, _nodeList.Count);
@@ -101,20 +109,39 @@ public abstract class NodeSet<T>
         _nodeList.Add(nodeData);
     }
 
-    public void RemoveNode(int index)
+    protected void RawRemoveNode(int index)
     {
-        _nodeList.RemoveAt(index);
+        RawRemoveNode(_nodeList[index]);
     }
-    public void RemoveNode(T data)
+    protected virtual void RawRemoveNode(T data)
     {
         _nodeList.Remove(data);
+    }
+
+
+    #endregion
+
+
+    #region public関数
+
+    public abstract void AddNode();
+
+    public void RemoveNode(int index)
+    {
+        RemoveNode(_nodeList[index]);
+    }
+
+    public void RemoveNode(T data)
+    {
+        RawRemoveNode(data);
+        ResetRect();
     }
 
     public void DrawNode(string name, int numberSet)
     {
         for (int i = 0; i < _nodeList.Count; i++)
         {
-            Rect newRect = GUI.Window(i + numberSet, GetRect(i),_nodeList[i].CallBack, name + i, GetColorCodeString());
+            Rect newRect = GUI.Window(i + numberSet, GetRect(i), _nodeList[i].CallBack, name + i, GetColorCodeString());
             SetRect(i, newRect);
         }
     }

@@ -11,13 +11,18 @@ public class UITermWIndow : DefaultWindow
     UITransitionTerm _transitionData;
     
     BoolTermNodeSet _boolNodeSet;
+    TrrigerTermNodeSet _trrigerNodeSet;
 
     public void OpenWindow(UITransitionTerm tranData)
     {
         _transitionData = tranData;
-        _boolNodeSet = new BoolTermNodeSet(new Vector2(400, 50), new Vector2(200, 150),tranData, colorCode: 5);
-        List<BoolTermNodeData> initData = _boolNodeSet.ConvertUIBoolTerm2NodeData(tranData._BoolTerms);
-        DefaultWindow.AddNode(_boolNodeSet,initData);
+        //_boolNodeSet = new BoolTermNodeSet(new Vector2(400, 50), new Vector2(200, 150),tranData, colorCode: 5);
+        _boolNodeSet = new BoolTermNodeSet(
+            new Vector2(400, 50), new Vector2(200, 150) , _transitionData,tranData._BoolTerms, colorCode: 5
+            );
+        _trrigerNodeSet = new TrrigerTermNodeSet(
+            new Vector2(100, 50), new Vector2(200, 150),_transitionData,colorCode:3
+            );
         ShowWindow<UITermWIndow>();
     }
 
@@ -25,14 +30,13 @@ public class UITermWIndow : DefaultWindow
     {
         if (GUILayout.Button("add bool term"))
         {
-            _transitionData.AddBoolTerm(BoolTermType.AwakeTime);
-            int lastCount = _transitionData._BoolTerms.Count - 1;
-            DefaultWindow.AddNode(_boolNodeSet,new BoolTermNodeData(_boolNodeSet,_transitionData,_transitionData._BoolTerms[lastCount]));
+            _boolNodeSet.AddNode();
         }
 
         BeginWindows();
         //DrawNode(_trrigerNode,"トリガー",0);
-        DefaultWindow.DrawNode(_boolNodeSet,"ブール",10);
+        _boolNodeSet.DrawNode("ブール",10);
+        _trrigerNodeSet.DrawNode("トリガー", 0);
         EndWindows();
     }
 

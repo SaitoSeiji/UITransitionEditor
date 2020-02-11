@@ -3,27 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+#if UNITY_EDITOR
 using UnityEditor;
 
-//現状必要性を感じない
 public class BoolTermNodeSet : NodeSet<BoolTermNodeData>
 {
     UITransitionTerm _tranData;
 
-    public BoolTermNodeSet(Vector2 firstPos, Vector2 nodeSize, UITransitionTerm tranData, int colorCode = 0)
-        : base(firstPos, nodeSize, colorCode)
+    public BoolTermNodeSet(Vector2 firstPos, Vector2 nodeSize
+        , UITransitionTerm tranData, List<AbstractUIBoolTerm> boolTerms
+        ,int colorCode = 0) 
+        :base(firstPos, nodeSize, colorCode)
     {
         _tranData = tranData;
+        RawAddNode(ConvertUIBoolTerm2NodeData(boolTerms));
     }
-    public BoolTermNodeSet(Vector2 firstPos, Vector2 nodeSize, UITransitionTerm tranData
-        , bool arrangeX, int arrangeCount, int colorCode = 0)
-        : base(firstPos, nodeSize, arrangeX, arrangeCount, colorCode)
-    {
-        _tranData = tranData;
-    }
-
-    //abstract or staticにしたい
-    public List<BoolTermNodeData> ConvertUIBoolTerm2NodeData(List<AbstractUIBoolTerm> boolTerms)
+    
+    List<BoolTermNodeData> ConvertUIBoolTerm2NodeData(List<AbstractUIBoolTerm> boolTerms)
     {
         var result = new List<BoolTermNodeData>();
         for (int i = 0; i < boolTerms.Count; i++)
@@ -33,6 +29,19 @@ public class BoolTermNodeSet : NodeSet<BoolTermNodeData>
         }
         return result;
     }
+
+    public override void AddNode()
+    {
+        _tranData.AddBoolTerm(BoolTermType.AwakeTime);
+        var NewData= new BoolTermNodeData(this, _tranData, _tranData._BoolTerms[_tranData._BoolTerms.Count-1]);
+        base.RawAddNode(NewData);
+    }
+
+    protected override void RawRemoveNode(BoolTermNodeData data)
+    {
+        _tranData.RemoveBoolTerm(data._boolTerm);
+        base.RawRemoveNode(data);
+    }
 }
 
 public class BoolTermNodeData : NodeData
@@ -41,7 +50,7 @@ public class BoolTermNodeData : NodeData
     
 
     UITransitionTerm _tranTerm;
-    AbstractUIBoolTerm _boolTerm;
+    public AbstractUIBoolTerm _boolTerm { get; private set; }
     BoolTermNodeSet _nodeSet;
 
     public BoolTermNodeData(BoolTermNodeSet nodeSet,UITransitionTerm tranTerms,AbstractUIBoolTerm myBoolTerm)
@@ -82,9 +91,9 @@ public class BoolTermNodeData : NodeData
 
         if (GUILayout.Button("remove"))
         {
-            _tranTerm.RemoveBoolTerm(_boolTerm);
-            DefaultWindow.RemoveNode(_nodeSet,this);
+            _nodeSet.RemoveNode(this);
         }
     }
     
 }
+#endif

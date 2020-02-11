@@ -6,7 +6,8 @@ using UnityEngine.UI;
 //指定のボタンを押すと条件を満たす
 public class OncliclUITrrigerTerm : AbstractUITrrigerTerm
 {
-    [SerializeField] Button[] targetButtons;//指定のボタン
+    [SerializeField] Button[] targetButtons=new Button[1];//指定のボタン
+    public Button _HeadButton { get { return targetButtons[0];}set { targetButtons[0] = value; } }
 
     protected override CoalTiming_StaisfyAction SetCoalTiming()
     {
@@ -21,5 +22,10 @@ public class OncliclUITrrigerTerm : AbstractUITrrigerTerm
             bt.onClick.AddListener(() => SetSatisfyTrriger(true));
         }
         return true;
+    }
+
+    public override TrrigerType GetTrrigerType()
+    {
+        return TrrigerType.Onclick;
     }
 }
