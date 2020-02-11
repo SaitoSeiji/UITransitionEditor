@@ -36,23 +36,37 @@ public class UITransitionTerm
 
     #region Editor
 
-    public void AddBoolTerm(BoolTermType type)
+    public AbstractUIBoolTerm AddBoolTerm(BoolTermType type)
     {
         var termType = AbstractUIBoolTerm.GetBoolTermType(type);
         var abst= targetTransform.AddComponent(termType) as AbstractUIBoolTerm;
         _boolTerms.Add(abst);
+        return abst;
     }
 
     public void RemoveBoolTerm(int index)
     {
-        MonoBehaviour.DestroyImmediate(_boolTerms[index]);
-        _boolTerms.RemoveAt(index);
+        RemoveBoolTerm(_boolTerms[index]);
+    }
+
+    public void RemoveBoolTerm(AbstractUIBoolTerm term)
+    {
+        //_boolTermsに所属していないとエラーを吐きそうだが対策をしていない
+        MonoBehaviour.DestroyImmediate(term);
+        _boolTerms.Remove(term);
     }
 
     public void SetBoolTerm(int index, BoolTermType type)
     {
-        RemoveBoolTerm(index);
-        AddBoolTerm(type);
+        SetBoolTerm(_boolTerms[index],type);
     }
+
+    public AbstractUIBoolTerm SetBoolTerm(AbstractUIBoolTerm term,BoolTermType type)
+    {
+        RemoveBoolTerm(term);
+        var result= AddBoolTerm(type);
+        return result;
+    }
+    
     #endregion
 }

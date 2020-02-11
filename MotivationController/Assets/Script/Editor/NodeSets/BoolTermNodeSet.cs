@@ -1,77 +1,90 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEditor;
 
+//現状必要性を感じない
 public class BoolTermNodeSet : NodeSet<BoolTermNodeData>
 {
-    public BoolTermNodeSet(Vector2 firstPos, Vector2 nodeSize, int colorCode = 0)
+    UITransitionTerm _tranData;
+
+    public BoolTermNodeSet(Vector2 firstPos, Vector2 nodeSize, UITransitionTerm tranData, int colorCode = 0)
         : base(firstPos, nodeSize, colorCode)
     {
+        _tranData = tranData;
     }
-    public BoolTermNodeSet(Vector2 firstPos, Vector2 nodeSize
+    public BoolTermNodeSet(Vector2 firstPos, Vector2 nodeSize, UITransitionTerm tranData
         , bool arrangeX, int arrangeCount, int colorCode = 0)
         : base(firstPos, nodeSize, arrangeX, arrangeCount, colorCode)
     {
+        _tranData = tranData;
     }
-    
+
+    //abstract or staticにしたい
+    public List<BoolTermNodeData> ConvertUIBoolTerm2NodeData(List<AbstractUIBoolTerm> boolTerms)
+    {
+        var result = new List<BoolTermNodeData>();
+        for (int i = 0; i < boolTerms.Count; i++)
+        {
+            var data = new BoolTermNodeData(this,_tranData, _tranData._BoolTerms[i]);
+            result.Add(data);
+        }
+        return result;
+    }
 }
 
 public class BoolTermNodeData : NodeData
 {
-    BoolTermType _myType;
+    BoolTermType _boolTermType;
     
 
-    UITransitionTerm _myTerms;
-    int _termIndex;
+    UITransitionTerm _tranTerm;
+    AbstractUIBoolTerm _boolTerm;
+    BoolTermNodeSet _nodeSet;
 
-    public BoolTermNodeData()
+    public BoolTermNodeData(BoolTermNodeSet nodeSet,UITransitionTerm tranTerms,AbstractUIBoolTerm myBoolTerm)
     {
-
-    }
-
-    public BoolTermNodeData(BoolTermType type, UITransitionTerm tranTerms,int termIndex)
-    {
-        _myType = type;
-        _myTerms = tranTerms;
-        _termIndex = termIndex;
+        _nodeSet = nodeSet;
+        _tranTerm = tranTerms;
+        _boolTerm = myBoolTerm;
+        _boolTermType = _boolTerm.GetTermType();
     }
 
     public override void AbstractCallBack()
     {
         EditorGUI.BeginChangeCheck();
-        _myType = (BoolTermType)EditorGUILayout.EnumPopup("Type", _myType);
+        _boolTermType = (BoolTermType)EditorGUILayout.EnumPopup("Type", _boolTermType);
         if (EditorGUI.EndChangeCheck())
         {
-            //_myBoolTerm=SetBoolTerm(_myType);
-            _myTerms.SetBoolTerm(_termIndex, _myType);
+            //SetBoolTermすると持っていた_boolTermが破棄されるので新しく代入しなおす
+            //自動で代入されなおすほうがいいかもしれない
+            _boolTerm=_tranTerm.SetBoolTerm(_boolTerm, _boolTermType);
         }
 
-        switch (_myType)
+        switch (_boolTermType)
         {
             case BoolTermType.AwakeTime:
                 {
-                    AwakeTimeBoolTerm term = (AwakeTimeBoolTerm)GetMyBoolTerm();
-                    if (term == null) break;
+                    AwakeTimeBoolTerm term = (AwakeTimeBoolTerm)_boolTerm;
                     term.waitLength = EditorGUILayout.FloatField("待ち時間", term.waitLength);
                     break;
                 }
             case BoolTermType.OnClickTime:
                 {
-                    OnClickTimeBoolTerm term = (OnClickTimeBoolTerm)GetMyBoolTerm();
-                    if (term == null) break;
+                    OnClickTimeBoolTerm term = (OnClickTimeBoolTerm)_boolTerm;
                     term._targetClickTime = EditorGUILayout.IntField("押す回数", term._targetClickTime);
                     term._ClickTargetHead = EditorGUILayout.ObjectField("ボタン", term._ClickTargetHead, typeof(Button), true) as Button;
                     break;
                 }
         }
-    }
 
-
-    AbstractUIBoolTerm GetMyBoolTerm()
-    {
-        if (_myTerms==null||_myTerms._BoolTerms.Count <= _termIndex) return null;
-        return  _myTerms._BoolTerms[_termIndex];
+        if (GUILayout.Button("remove"))
+        {
+            _tranTerm.RemoveBoolTerm(_boolTerm);
+            DefaultWindow.RemoveNode(_nodeSet,this);
+        }
     }
+    
 }

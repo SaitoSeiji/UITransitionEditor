@@ -12,14 +12,8 @@ public abstract class NodeSet<T>
     int _arrangeCount = 5;//並べる最大個数
     int _colorCode=0;
     
-    //List<Rect> _rectList = new List<Rect>();
-    public int _rectCount { get { return _nodeList.Count; } }
-
-    public List<T> _nodeList = new List<T>();
-
-    //描画時に呼ばれる関数
-    //ノード内の描画などを担当
-    UnityEvent drawCallback = new UnityEvent();
+    protected List<T> _nodeList = new List<T>();
+    
     #region コンストラクタ
     public NodeSet(Vector2 firstPos, Vector2 nodeSize,int colorCode=0)
     {
@@ -41,19 +35,6 @@ public abstract class NodeSet<T>
     #endregion
     #region rect関係
 
-    public void AddNode(T nodeData)
-    {
-        Rect result = new Rect(_firstPos.x, _firstPos.y, _nodeSize.x, _nodeSize.y);
-        result = CaliculatePositionRect(result, _arrangeX, _nodeList.Count);
-        nodeData.SetRect(result);
-        nodeData.SetDefaultCallback(drawCallback);
-        _nodeList.Add(nodeData);
-    }
-
-    public void RemoveNode(int index)
-    {
-        _nodeList.RemoveAt(index);
-    }
 
     //public void AddRect()
     //{
@@ -84,13 +65,16 @@ public abstract class NodeSet<T>
         {
             //_rectList[i] = new Rect(_firstPos.x, _firstPos.y, _nodeSize.x, _nodeSize.y);
             //_rectList[i] = CaliculatePositionRect(_rectList[i], _arrangeX, i);
-            var newRect= new Rect(_firstPos.x, _firstPos.y, _nodeSize.x, _nodeSize.y);
-            newRect = CaliculatePositionRect(newRect, _arrangeX, i);
+            Rect newRect = CaliculateRect(GetInitRect(), _arrangeX, i);
             _nodeList[i].SetRect(newRect);
         }
     }
-    #endregion
-    Rect CaliculatePositionRect(Rect firstPos, bool arrangeX, int nodeCount)
+    Rect GetInitRect()
+    {
+        return new Rect(_firstPos.x, _firstPos.y, _nodeSize.x, _nodeSize.y);
+    }
+
+    Rect CaliculateRect(Rect firstPos, bool arrangeX, int nodeCount)
     {
         Rect result = firstPos;
         float nodeInterval = 5;
@@ -101,38 +85,48 @@ public abstract class NodeSet<T>
         return result;
     }
 
+    #endregion
     public string GetColorCodeString()
     {
         return "flow node " + _colorCode;
     }
+    #region node関連
 
-    #region callback関係
-
-    public void AddCallback(UnityAction ua)
+    public void AddNode(T nodeData)
     {
-        drawCallback.AddListener(ua);
+        //ノードのrectの計算
+        Rect makeRect = CaliculateRect(GetInitRect(), _arrangeX, _nodeList.Count);
+        //ノードの登録
+        nodeData.SetRect(makeRect);
+        _nodeList.Add(nodeData);
     }
 
-    public void ResetCallback(UnityAction ua)
+    public void RemoveNode(int index)
     {
-        drawCallback = new UnityEvent();
+        _nodeList.RemoveAt(index);
+    }
+    public void RemoveNode(T data)
+    {
+        _nodeList.Remove(data);
     }
 
+    public void DrawNode(string name, int numberSet)
+    {
+        for (int i = 0; i < _nodeList.Count; i++)
+        {
+            Rect newRect = GUI.Window(i + numberSet, GetRect(i),_nodeList[i].CallBack, name + i, GetColorCodeString());
+            SetRect(i, newRect);
+        }
+    }
     #endregion
 }
 
 public abstract class NodeData
 {
-    UnityEvent _defaultCallback;
     Rect _myRect;
 
     public NodeData()
     {
-    }
-
-    public void SetDefaultCallback(UnityEvent callback)
-    {
-        _defaultCallback = callback;
     }
 
     public void SetRect(Rect rect)
@@ -147,7 +141,6 @@ public abstract class NodeData
     public void CallBack(int id)
     {
         AbstractCallBack();
-        _defaultCallback.Invoke();
     }
     public abstract void AbstractCallBack();
     
