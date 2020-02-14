@@ -21,7 +21,7 @@ namespace aoji_EditorUI
             _transitionData = tranData;
             //_boolNodeSet = new BoolTermNodeSet(new Vector2(400, 50), new Vector2(200, 150),tranData, colorCode: 5);
             _boolNodeSet = new BoolTermNodeSet(
-                new Vector2(400, 50), new Vector2(200, 150), _transitionData, tranData._BoolTerms, colorCode: 5
+                new Vector2(400, 50), new Vector2(200, 150), _transitionData, tranData.GetBoolTerms(), colorCode: 5
                 );
             _trrigerNodeSet = new TrrigerTermNodeSet(
                 new Vector2(100, 50), new Vector2(200, 150), _transitionData, colorCode: 3
@@ -31,6 +31,10 @@ namespace aoji_EditorUI
 
         private void OnGUI()
         {
+            if (GUILayout.Button("apply"))
+            {
+                _transitionData.SyncData2Comp();
+            }
             if (GUILayout.Button("add bool term"))
             {
                 _boolNodeSet.AddNode();

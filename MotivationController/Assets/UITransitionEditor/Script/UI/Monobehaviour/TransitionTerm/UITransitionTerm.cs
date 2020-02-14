@@ -9,23 +9,26 @@ namespace aojiru_UI
     public class UITransitionTerm
     {
         //bool条件をすべて満たした状態で　トリガー条件を達成すると遷移可能
-        [SerializeField] protected AbstractUITrrigerTerm _trrigerTerm;
-        public AbstractUITrrigerTerm _TrrigerTerm { get { return _trrigerTerm; } }
-        [SerializeField] protected List<AbstractUIBoolTerm> _boolTerms = new List<AbstractUIBoolTerm>(); //bool条件　複数設定可能
-        public List<AbstractUIBoolTerm> _BoolTerms { get { return _boolTerms; } }
+        //AbstractUITrrigerTerm _trrigerTerm;
+        AbstractUITrrigerTerm _trrigerTerm;
+        [SerializeField] TrrigerTermComponent _trrigerComponent;
 
-        [HideInInspector, SerializeField] GameObject termComponentObject;
+        List<AbstractUIBoolTerm> _boolTerms = new List<AbstractUIBoolTerm>(); //bool条件　複数設定可能
+        //public List<AbstractUIBoolTerm> _BoolTerms { get { return _boolTerms; } }
+        [SerializeField] List<BoolTermComponent> _boolTermComponentList = new List<BoolTermComponent>();
+
+        [HideInInspector, SerializeField] GameObject _termComponentObject;
 
         //遷移の条件を満たしている
         public bool IsMeetTerms()
         {
-            if (_trrigerTerm == null || _trrigerTerm.SatisfyTrriger._Trriger)
+            if (_trrigerComponent.GetData() == null || _trrigerComponent.GetData().SatisfyTrriger._Trriger)
             {
                 //トリガー条件を達成した状態で　bool条件をすべて満たすと遷移可能
-                foreach (var term in _boolTerms)
+                foreach (var term in _boolTermComponentList)
                 {
                     //1つでも満たしていなければfalse
-                    if (!term._IsSatisfy) return false;
+                    if (!term.GetData()._IsSatisfy) return false;
                 }
                 return true;
             }
@@ -37,64 +40,116 @@ namespace aojiru_UI
 
 
         #region Editor
+
+        public void SyncComp2Data()
+        {
+            //var component = _termComponentObject.GetComponent<AbstractUITrrigerTerm>();
+            //_trrigerTerm = component;
+            _trrigerTerm = Data2CompConverter.SyncComp2Data<TrrigerTermComponent, AbstractUITrrigerTerm>(_termComponentObject);
+            //var components = _termComponentObject.GetComponents<AbstractUIBoolTerm>();
+            //_boolTerms = new List<AbstractUIBoolTerm>();
+            //_boolTerms.AddRange(components);
+
+            _boolTerms=Data2CompConverter.SyncComp2Datas<BoolTermComponent,AbstractUIBoolTerm>(_termComponentObject);
+        }
+
+        public void SyncData2Comp()
+        {
+            _trrigerComponent =
+                Data2CompConverter.SyncData2Comp<TrrigerTermComponent, AbstractUITrrigerTerm>(_termComponentObject,_trrigerTerm);
+            _boolTermComponentList=
+                Data2CompConverter.SyncData2Comps<BoolTermComponent, AbstractUIBoolTerm>(_termComponentObject, _boolTerms);
+        }
         #region trrigerTerm
-
-        public AbstractUITrrigerTerm AddTrrigerTerm(TrrigerType type)
+        public void SetTrriger(AbstractUITrrigerTerm term)
         {
-            var termType = AbstractUITrrigerTerm.GetTrrigerTermType(type);
-            var abst = termComponentObject.AddComponent(termType) as AbstractUITrrigerTerm;
-            _trrigerTerm = abst;
-            return abst;
-        }
-        void RemoveTrrigerTerm(AbstractUITrrigerTerm term)
-        {
-            //_boolTermsに所属していないとエラーを吐きそうだが対策をしていない
-            MonoBehaviour.DestroyImmediate(term);
+            _trrigerTerm = term;
         }
 
-        public AbstractUITrrigerTerm SetTrrigerTerm(AbstractUITrrigerTerm term, TrrigerType type)
+        public AbstractUITrrigerTerm GetTrriger()
         {
-            RemoveTrrigerTerm(term);
-            var result = AddTrrigerTerm(type);
-            return result;
+            return _trrigerTerm;
         }
+
+        //public AbstractUITrrigerTerm AddTrrigerTerm(TrrigerType type)
+        //{
+        //    //var termType = AbstractUITrrigerTerm.GetTrrigerTermType(type);
+        //    //var abst = _termComponentObject.AddComponent(termType) as AbstractUITrrigerTerm;
+        //    //_trrigerTerm = abst;
+        //    //return abst;
+        //}
+        //void RemoveTrrigerTerm(AbstractUITrrigerTerm term)
+        //{
+        //    //_boolTermsに所属していないとエラーを吐きそうだが対策をしていない
+        //    MonoBehaviour.DestroyImmediate(term);
+        //}
+
+        //public AbstractUITrrigerTerm SetTrrigerTerm(AbstractUITrrigerTerm term, TrrigerType type)
+        //{
+        //    RemoveTrrigerTerm(term);
+        //    var result = AddTrrigerTerm(type);
+        //    return result;
+        //}
         #endregion
         #region boolTerm
-        public AbstractUIBoolTerm AddBoolTerm(BoolTermType type)
+        public List<AbstractUIBoolTerm> GetBoolTerms()
         {
-            var termType = AbstractUIBoolTerm.GetBoolTermType(type);
-            var abst = termComponentObject.AddComponent(termType) as AbstractUIBoolTerm;
-            _boolTerms.Add(abst);
-            return abst;
+            return _boolTerms;
         }
 
-        public void RemoveBoolTerm(int index)
+        public AbstractUIBoolTerm SetBoolTerms(AbstractUIBoolTerm term, BoolTermType type)
         {
-            RemoveBoolTerm(_boolTerms[index]);
-        }
-
-        public void RemoveBoolTerm(AbstractUIBoolTerm term)
-        {
-            //_boolTermsに所属していないとエラーを吐きそうだが対策をしていない
-            MonoBehaviour.DestroyImmediate(term);
             _boolTerms.Remove(term);
+            AbstractUIBoolTerm newTerm = null;
+            switch (type)
+            {
+                case BoolTermType.AwakeTime:
+                    newTerm = new AwakeTimeBoolTerm(); 
+                    break;
+                case BoolTermType.OnClickTime:
+                    newTerm = new OnClickTimeBoolTerm();
+                    break;
+            }
+            _boolTerms.Add(newTerm);
+            return newTerm;
         }
 
-        public void SetBoolTerm(int index, BoolTermType type)
-        {
-            SetBoolTerm(_boolTerms[index], type);
-        }
+        //public AbstractUIBoolTerm AddBoolTerm(BoolTermType type)
+        //{
+        //    var termType = AbstractUIBoolTerm.GetBoolTermType(type);
+        //    var abst = _termComponentObject.AddComponent(typeof(BoolTermComponent))as BoolTermComponent;
+        //    _boolTerms.Add(abst.GetData());
+        //    return abst.GetData();
+        //}
 
-        public AbstractUIBoolTerm SetBoolTerm(AbstractUIBoolTerm term, BoolTermType type)
-        {
-            RemoveBoolTerm(term);
-            var result = AddBoolTerm(type);
-            return result;
-        }
+        //public void RemoveBoolTerm(int index)
+        //{
+        //    RemoveBoolTerm(_boolTerms[index]);
+        //}
+
+        //public void RemoveBoolTerm(AbstractUIBoolTerm term)
+        //{
+        //    //_boolTermsに所属していないとエラーを吐きそうだが対策をしていない
+        //    MonoBehaviour.DestroyImmediate(term);
+        //    _boolTerms.Remove(term);
+        //}
+
+        //public void SetBoolTerm(int index, BoolTermType type)
+        //{
+        //    SetBoolTerm(_boolTerms[index], type);
+        //}
+
+        //public AbstractUIBoolTerm SetBoolTerm(AbstractUIBoolTerm term, BoolTermType type)
+        //{
+        //    RemoveBoolTerm(term);
+        //    var result = AddBoolTerm(type);
+        //    return result;
+        //}
         #endregion
         public void SetTermComponentObject(GameObject obj)
         {
-            termComponentObject = obj;
+            _termComponentObject = obj;
+            SyncComp2Data();
         }
         #endregion
     }

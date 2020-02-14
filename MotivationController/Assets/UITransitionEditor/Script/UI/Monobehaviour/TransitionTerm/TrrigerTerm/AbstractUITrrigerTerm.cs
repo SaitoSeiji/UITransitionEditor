@@ -13,7 +13,7 @@ namespace aojiru_UI
 
     //UIの遷移条件　トリガー条件を管理するクラス
     //具体定期なトリガー条件は子クラスで指定
-    public abstract class AbstractUITrrigerTerm : MonoBehaviour, IMessageTransporter
+    public abstract class AbstractUITrrigerTerm : AbstractComponentData_uiActiveInterface
     {
         //SetSatisfyActionが呼ばれるタイミングを指定
         public enum CoalTiming_StaisfyAction
@@ -27,18 +27,15 @@ namespace aojiru_UI
         Trriger satisfyTrriger = new Trriger();
         public Trriger SatisfyTrriger { get { return satisfyTrriger; } }//このクラスが指定する条件を満たしているか
 
-
-        private void Awake()
+        public override void AwakeAction()
         {
-            SetTransportParent_privete();
             coalTiming = SetCoalTiming();
             if (coalTiming == CoalTiming_StaisfyAction.AWAKE)
             {
                 SetSatisfyAction();
             }
         }
-
-        private void Start()
+        public override void StartAction()
         {
             if (coalTiming == CoalTiming_StaisfyAction.START)
             {
@@ -46,7 +43,7 @@ namespace aojiru_UI
             }
         }
 
-        private void Update()
+        public override void UpdateAction()
         {
             if (coalTiming == CoalTiming_StaisfyAction.UPDATE)
             {
@@ -58,14 +55,10 @@ namespace aojiru_UI
         }
         #region interfaceの実装
         //対象のUICanvasのstateがActiveになったら呼ばれる初期化関数
-        public void TranspotMessage_uiActive()
+
+        public override void TranspotMessage_uiActive()
         {
             satisfyTrriger._Trriger = false;
-        }
-        public void SetTransportParent_privete()
-        {
-            var parent = MessageTransporter.FindParentTransporter(transform);
-            if (parent != null) parent.SetMessageTarget(gameObject);
         }
         #endregion
 

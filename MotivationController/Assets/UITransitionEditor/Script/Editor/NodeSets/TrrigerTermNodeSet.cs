@@ -36,7 +36,7 @@ namespace aoji_EditorUI
 
 
         UITransitionTerm _tranTerm;
-        AbstractUITrrigerTerm _trrigerTerm { get { return _tranTerm._TrrigerTerm; } }
+        AbstractUITrrigerTerm _trrigerTerm { get { return _tranTerm.GetTrriger(); } }
         TrrigerTermNodeSet _nodeSet;
 
         public TrrigerTermNodeData(TrrigerTermNodeSet nodeSet, UITransitionTerm tranTerm)
@@ -45,7 +45,8 @@ namespace aoji_EditorUI
             _tranTerm = tranTerm;
             if (_trrigerTerm == null)
             {
-                _tranTerm.AddTrrigerTerm(TrrigerType.None);
+                //_tranTerm.AddTrrigerTerm(TrrigerType.None);
+                _tranTerm.SetTrriger(new NoneUITrrigerTerm());
             }
 
             _trrigerType = _trrigerTerm.GetTrrigerType();
@@ -58,7 +59,16 @@ namespace aoji_EditorUI
             _trrigerType = (TrrigerType)EditorGUILayout.EnumPopup("Type", _trrigerType);
             if (EditorGUI.EndChangeCheck())
             {
-                _tranTerm.SetTrrigerTerm(_trrigerTerm, _trrigerType);
+                //_tranTerm.SetTrrigerTerm(_trrigerTerm, _trrigerType);
+                switch (_trrigerType)
+                {
+                    case TrrigerType.None:
+                        _tranTerm.SetTrriger(new NoneUITrrigerTerm());
+                        break;
+                    case TrrigerType.Onclick:
+                        _tranTerm.SetTrriger(new OncliclUITrrigerTerm());
+                        break;
+                }
             }
 
             switch (_trrigerType)

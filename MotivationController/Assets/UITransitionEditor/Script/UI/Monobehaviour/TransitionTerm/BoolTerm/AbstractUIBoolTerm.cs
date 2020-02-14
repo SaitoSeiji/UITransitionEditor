@@ -13,17 +13,21 @@ namespace aojiru_UI
     }
 
     //UIの遷移条件　bool条件
-    public abstract class AbstractUIBoolTerm : MonoBehaviour, IMessageTransporter
+    public abstract class AbstractUIBoolTerm : AbstractComponentData_uiActiveInterface
     {
         [SerializeField] bool _isSatisfy;
         public bool _IsSatisfy { get { return _isSatisfy; } private set { _isSatisfy = value; } }
 
-        private void Awake()
+        public override void AwakeAction()
         {
             InitAction();
         }
 
-        private void Update()
+        public override void StartAction()
+        {
+        }
+
+        public override void UpdateAction()
         {
             if (ConcreteTerm())
             {
@@ -33,20 +37,18 @@ namespace aojiru_UI
             {
                 _IsSatisfy = false;
             }
-
         }
+        
         protected virtual void InitAction()
         {
-            SetTransportParent_privete();
         }
         #region interfaceの実装
-        public void SetTransportParent_privete()
-        {
-            var parent = MessageTransporter.FindParentTransporter(transform);
-            if (parent != null) parent.SetMessageTarget(this.gameObject);
-        }
-
-        public abstract void TranspotMessage_uiActive();
+        //public void SetTransportParent_privete()
+        //{
+        //    var parent = MessageTransporter.FindParentTransporter(transform);
+        //    if (parent != null) parent.SetMessageTarget(this.gameObject);
+        //}
+        
         #endregion
         //具体的な条件
         //満たされていればTrueなことが名前からわかりずらい

@@ -27,7 +27,7 @@ namespace aoji_EditorUI
             var result = new List<BoolTermNodeData>();
             for (int i = 0; i < boolTerms.Count; i++)
             {
-                var data = new BoolTermNodeData(this, _tranData, _tranData._BoolTerms[i]);
+                var data = new BoolTermNodeData(this, _tranData, _tranData.GetBoolTerms()[i]);//_BoolTerms[i]);
                 result.Add(data);
             }
             return result;
@@ -35,14 +35,20 @@ namespace aoji_EditorUI
 
         public override void AddNode()
         {
-            _tranData.AddBoolTerm(BoolTermType.AwakeTime);
-            var NewData = new BoolTermNodeData(this, _tranData, _tranData._BoolTerms[_tranData._BoolTerms.Count - 1]);
+            //_tranData.AddBoolTerm(BoolTermType.AwakeTime);
+
+            //var NewData = new BoolTermNodeData(this, _tranData, _tranData._BoolTerms[_tranData._BoolTerms.Count - 1]);
+
+            var boolTerms = _tranData.GetBoolTerms();
+            boolTerms.Add(new AwakeTimeBoolTerm());
+            var NewData = new BoolTermNodeData(this, _tranData,boolTerms [boolTerms.Count - 1]);
             base.RawAddNode(NewData);
         }
 
         protected override void RawRemoveNode(BoolTermNodeData data)
         {
-            _tranData.RemoveBoolTerm(data._boolTerm);
+            //_tranData.RemoveBoolTerm(data._boolTerm);
+            _tranData.GetBoolTerms().Remove(data._boolTerm);
             base.RawRemoveNode(data);
         }
     }
@@ -71,7 +77,9 @@ namespace aoji_EditorUI
             {
                 //SetBoolTermすると持っていた_boolTermが破棄されるので新しく代入しなおす
                 //自動で代入されなおすほうがいいかもしれない
-                _boolTerm = _tranTerm.SetBoolTerm(_boolTerm, _boolTermType);
+                _boolTerm = _tranTerm.SetBoolTerms(_boolTerm, _boolTermType);
+                //_boolTerm = _tranTerm.SetBoolTerm(_boolTerm, _boolTermType);
+
             }
 
             switch (_boolTermType)
