@@ -5,7 +5,8 @@ using UnityEngine;
 public abstract class AbstractComponent<T> : MonoBehaviour
     where T:AbstractComponentData
 {
-    [SerializeField] protected T _compData { get; private set; }
+    [SerializeField] T _compData;
+    public T _CompData { get { return _compData; } }
 
     public void SetData(T data)
     {

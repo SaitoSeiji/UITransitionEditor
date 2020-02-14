@@ -13,6 +13,7 @@ namespace aojiru_UI
     }
 
     //UIの遷移条件　bool条件
+    [System.Serializable]
     public abstract class AbstractUIBoolTerm : AbstractComponentData_uiActiveInterface
     {
         [SerializeField] bool _isSatisfy;

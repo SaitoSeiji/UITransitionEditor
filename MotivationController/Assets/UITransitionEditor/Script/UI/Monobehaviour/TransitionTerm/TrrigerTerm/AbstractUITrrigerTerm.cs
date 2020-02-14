@@ -13,6 +13,7 @@ namespace aojiru_UI
 
     //UIの遷移条件　トリガー条件を管理するクラス
     //具体定期なトリガー条件は子クラスで指定
+    [System.Serializable]
     public abstract class AbstractUITrrigerTerm : AbstractComponentData_uiActiveInterface
     {
         //SetSatisfyActionが呼ばれるタイミングを指定

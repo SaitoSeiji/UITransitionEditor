@@ -6,6 +6,7 @@ using UnityEngine.UI;
 namespace aojiru_UI
 {
     //ボタンを押した回数で条件達成
+    [System.Serializable]
     public class OnClickTimeBoolTerm : AbstractUIBoolTerm
     {
         [SerializeField] public int _targetClickTime;//目標回数

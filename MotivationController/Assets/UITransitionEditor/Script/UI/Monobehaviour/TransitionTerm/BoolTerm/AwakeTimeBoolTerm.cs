@@ -6,6 +6,7 @@ namespace aojiru_UI
 {
     //アクティブになってからの経過時間が条件
     //指定時間を待たずに条件を満たすことがある
+    [System.Serializable]
     public class AwakeTimeBoolTerm : AbstractUIBoolTerm
     {
         //editorで使用するためにpublic　ほんとはパブリックにしたくない

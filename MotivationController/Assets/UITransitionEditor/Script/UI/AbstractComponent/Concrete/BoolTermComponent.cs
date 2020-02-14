@@ -5,6 +5,5 @@ namespace aojiru_UI
 {
     public class BoolTermComponent : AbstractComponent_uiActiveInterface<AbstractUIBoolTerm>
     {
-
     }
 }

@@ -20,7 +20,8 @@ public class AbstractComponent_uiActiveInterface<T> : AbstractComponent<T>, IMes
 
     public void TranspotMessage_uiActive()
     {
-        _compData.TranspotMessage_uiActive();
+        if (_CompData == null) return;
+        _CompData.TranspotMessage_uiActive();
     }
     #endregion
 }
