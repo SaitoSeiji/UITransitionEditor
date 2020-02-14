@@ -39,10 +39,11 @@ public class MessageTransporter : MonoBehaviour
         Transform target = self;
         while (true)
         {
-            target = target.parent;
             if (target == null) return null;
             var trans=target.GetComponent<MessageTransporter>();
             if (trans != null) return trans;
+
+            target = target.parent;
         }
     }
 }

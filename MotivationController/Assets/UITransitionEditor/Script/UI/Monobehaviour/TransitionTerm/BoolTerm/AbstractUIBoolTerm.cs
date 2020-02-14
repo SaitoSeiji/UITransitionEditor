@@ -14,10 +14,11 @@ namespace aojiru_UI
 
     //UIの遷移条件　bool条件
     [System.Serializable]
-    public abstract class AbstractUIBoolTerm : AbstractComponentData_uiActiveInterface
+    public abstract class AbstractUIBoolTerm:AbstractTermScriptable
     {
         [SerializeField] bool _isSatisfy;
         public bool _IsSatisfy { get { return _isSatisfy; } private set { _isSatisfy = value; } }
+        
 
         public override void AwakeAction()
         {
@@ -68,6 +69,11 @@ namespace aojiru_UI
                 default:
                     return null;
             }
+        }
+
+        public static AbstractUIBoolTerm ConvertScriptable2bool(AbstractTermScriptable scripatble)
+        {
+            return (AbstractUIBoolTerm)scripatble;
         }
     }
 }

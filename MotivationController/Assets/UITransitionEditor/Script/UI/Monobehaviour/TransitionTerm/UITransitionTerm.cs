@@ -11,24 +11,26 @@ namespace aojiru_UI
         //bool条件をすべて満たした状態で　トリガー条件を達成すると遷移可能
         //AbstractUITrrigerTerm _trrigerTerm;
         AbstractUITrrigerTerm _trrigerTerm;
-        [SerializeField] TrrigerTermComponent _trrigerComponent;
+        [SerializeField] TermScriptableMonobehaviour _trrigerComponent;
 
         List<AbstractUIBoolTerm> _boolTerms = new List<AbstractUIBoolTerm>(); //bool条件　複数設定可能
-        //public List<AbstractUIBoolTerm> _BoolTerms { get { return _boolTerms; } }
-        [SerializeField] List<BoolTermComponent> _boolTermComponentList = new List<BoolTermComponent>();
+        [SerializeField] List<TermScriptableMonobehaviour> _boolTermComponentList = new List<TermScriptableMonobehaviour>();
 
         [HideInInspector, SerializeField] GameObject _termComponentObject;
 
         //遷移の条件を満たしている
         public bool IsMeetTerms()
         {
-            if (_trrigerComponent.GetData() == null || _trrigerComponent.GetData().SatisfyTrriger._Trriger)
+
+            var trrigerData =AbstractUITrrigerTerm.ConvertScriptable2Trriger( _trrigerComponent.GetData());
+            if (trrigerData == null || trrigerData.SatisfyTrriger._Trriger)
             {
                 //トリガー条件を達成した状態で　bool条件をすべて満たすと遷移可能
                 foreach (var term in _boolTermComponentList)
                 {
+                    var boolData = AbstractUIBoolTerm.ConvertScriptable2bool(term.GetData());
                     //1つでも満たしていなければfalse
-                    if (!term.GetData()._IsSatisfy) return false;
+                    if (boolData._IsSatisfy) return false;
                 }
                 return true;
             }
@@ -43,22 +45,30 @@ namespace aojiru_UI
 
         public void SyncComp2Data()
         {
-            //var component = _termComponentObject.GetComponent<AbstractUITrrigerTerm>();
-            //_trrigerTerm = component;
-            _trrigerTerm = Data2CompConverter.SyncComp2Data<TrrigerTermComponent, AbstractUITrrigerTerm>(_termComponentObject);
-            //var components = _termComponentObject.GetComponents<AbstractUIBoolTerm>();
-            //_boolTerms = new List<AbstractUIBoolTerm>();
-            //_boolTerms.AddRange(components);
 
-            _boolTerms=Data2CompConverter.SyncComp2Datas<BoolTermComponent,AbstractUIBoolTerm>(_termComponentObject);
+            _boolTerms = new List<AbstractUIBoolTerm>();
+            var compArray = _termComponentObject.GetComponents<TermScriptableMonobehaviour>();
+            foreach(var comp in compArray)
+            {
+                if (comp._ScriptableType == ScriptableType.Trriger)
+                {
+                    _trrigerTerm = AbstractUITrrigerTerm.ConvertScriptable2Trriger(comp.GetData());
+
+                }else if (comp._ScriptableType == ScriptableType.Bool)
+                {
+                    _boolTerms.Add( AbstractUIBoolTerm.ConvertScriptable2bool(comp.GetData()));
+                }
+            }
         }
 
         public void SyncData2Comp()
         {
-            _trrigerComponent =
-                Data2CompConverter.SyncData2Comp<TrrigerTermComponent, AbstractUITrrigerTerm>(_termComponentObject,_trrigerTerm);
-            _boolTermComponentList=
-                Data2CompConverter.SyncData2Comps<BoolTermComponent, AbstractUIBoolTerm>(_termComponentObject, _boolTerms);
+            //_trrigerComponent =
+            //    Data2CompConverter.SyncData2Comp<TrrigerTermComponent, AbstractUITrrigerTerm>(_termComponentObject,_trrigerTerm);
+            //_boolTermComponentList=
+            //    Data2CompConverter.SyncData2Comps<BoolTermComponent, AbstractUIBoolTerm>(_termComponentObject, _boolTerms);
+            //TermScriptableCreator.Create<AbstractUITrrigerTerm>(,);
+
         }
         #region trrigerTerm
         public void SetTrriger(AbstractUITrrigerTerm term)
