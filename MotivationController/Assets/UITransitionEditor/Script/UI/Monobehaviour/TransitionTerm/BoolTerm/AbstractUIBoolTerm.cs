@@ -12,9 +12,25 @@ namespace aojiru_UI
         OnClickTime//指定のボタンをクリックした回数で条件指定
     }
 
+    public static class BoolTypeConstract
+    {
+        public static AbstractUIBoolTerm ConstractTerm(BoolTermType type)
+        {
+            switch (type)
+            {
+                case BoolTermType.AwakeTime:
+                    return new AwakeTimeBoolTerm();
+                case BoolTermType.OnClickTime:
+                    return new OnClickTimeBoolTerm();
+                default:
+                    return null;
+            }
+        }
+    }
+
     //UIの遷移条件　bool条件
     [System.Serializable]
-    public abstract class AbstractUIBoolTerm:AbstractTermScriptable
+    public abstract class AbstractUIBoolTerm:AbstractTerm
     {
         [SerializeField] bool _isSatisfy;
         public bool _IsSatisfy { get { return _isSatisfy; } private set { _isSatisfy = value; } }
@@ -57,23 +73,6 @@ namespace aojiru_UI
         protected abstract bool ConcreteTerm();
 
         public abstract BoolTermType GetTermType();
-
-        public static System.Type GetBoolTermType(BoolTermType type)
-        {
-            switch (type)
-            {
-                case BoolTermType.AwakeTime:
-                    return typeof(AwakeTimeBoolTerm);
-                case BoolTermType.OnClickTime:
-                    return typeof(OnClickTimeBoolTerm);
-                default:
-                    return null;
-            }
-        }
-
-        public static AbstractUIBoolTerm ConvertScriptable2bool(AbstractTermScriptable scripatble)
-        {
-            return (AbstractUIBoolTerm)scripatble;
-        }
+        
     }
 }

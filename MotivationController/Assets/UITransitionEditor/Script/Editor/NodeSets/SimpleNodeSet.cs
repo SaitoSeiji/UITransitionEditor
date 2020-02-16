@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace aoji_EditorUI
+namespace aojiru_UI
 {
     public class SimpleNodeSet : NodeSet<SimpleNodeData>
     {
-        public SimpleNodeSet(Vector2 firstPos, Vector2 nodeSize, int colorCode = 0)
-            : base(firstPos, nodeSize, colorCode)
+        public SimpleNodeSet(UITermWIndow parentWindow,Vector2 firstPos, Vector2 nodeSize, int colorCode = 0)
+            : base(parentWindow,firstPos, nodeSize, colorCode)
         {
         }
-        public SimpleNodeSet(Vector2 firstPos, Vector2 nodeSize
+        public SimpleNodeSet(UITermWIndow parentWindow, Vector2 firstPos, Vector2 nodeSize
             , bool arrangeX, int arrangeCount, int colorCode = 0)
-            : base(firstPos, nodeSize, arrangeX, arrangeCount, colorCode)
+            : base(parentWindow,firstPos, nodeSize, arrangeX, arrangeCount, colorCode)
         {
         }
 

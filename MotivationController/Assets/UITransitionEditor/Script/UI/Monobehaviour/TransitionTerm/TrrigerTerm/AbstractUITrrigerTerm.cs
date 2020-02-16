@@ -9,12 +9,26 @@ namespace aojiru_UI
         None,//非enable
         Onclick//クリックすると反応
     }
-
+    public static class TrrigerTypeConstract
+    {
+        public static AbstractUITrrigerTerm ConstractTerm(TrrigerType type)
+        {
+            switch (type)
+            {
+                case TrrigerType.None:
+                    return new NoneUITrrigerTerm();
+                case TrrigerType.Onclick:
+                    return new OncliclUITrrigerTerm();
+                default:
+                    return null;
+            }
+        }
+    }
 
     //UIの遷移条件　トリガー条件を管理するクラス
     //具体定期なトリガー条件は子クラスで指定
     [System.Serializable]
-    public abstract class AbstractUITrrigerTerm : AbstractTermScriptable
+    public abstract class AbstractUITrrigerTerm : AbstractTerm
     {
         //SetSatisfyActionが呼ばれるタイミングを指定
         public enum CoalTiming_StaisfyAction
@@ -88,10 +102,6 @@ namespace aojiru_UI
             }
         }
         #endregion
-
-        public static AbstractUITrrigerTerm ConvertScriptable2Trriger(AbstractTermScriptable scriptable)
-        {
-            return (AbstractUITrrigerTerm)scriptable;
-        }
+        
     }
 }

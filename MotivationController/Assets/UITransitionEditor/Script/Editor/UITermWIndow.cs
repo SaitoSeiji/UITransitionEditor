@@ -5,7 +5,7 @@ using aojiru_UI;
 #if UNITY_EDITOR
 using UnityEditor;
 
-namespace aoji_EditorUI
+namespace aojiru_UI
 {
     public class UITermWIndow : DefaultWindow
     {
@@ -18,13 +18,14 @@ namespace aoji_EditorUI
 
         public void OpenWindow(UITransitionTerm tranData)
         {
+
             _transitionData = tranData;
             //_boolNodeSet = new BoolTermNodeSet(new Vector2(400, 50), new Vector2(200, 150),tranData, colorCode: 5);
-            _boolNodeSet = new BoolTermNodeSet(
-                new Vector2(400, 50), new Vector2(200, 150), _transitionData, tranData.GetBoolTerms(), colorCode: 5
+            _boolNodeSet = new BoolTermNodeSet(this,
+                new Vector2(400, 50), new Vector2(200, 150),tranData._boolTerms, colorCode: 5
                 );
-            _trrigerNodeSet = new TrrigerTermNodeSet(
-                new Vector2(100, 50), new Vector2(200, 150), _transitionData, colorCode: 3
+            _trrigerNodeSet = new TrrigerTermNodeSet(this,
+                new Vector2(100, 50), new Vector2(200, 150),tranData._trrigerTerm, colorCode: 3
                 );
             ShowWindow<UITermWIndow>();
         }
@@ -33,7 +34,7 @@ namespace aoji_EditorUI
         {
             if (GUILayout.Button("apply"))
             {
-                _transitionData.SyncData2Comp();
+                SyncData();
             }
             if (GUILayout.Button("add bool term"))
             {
@@ -47,11 +48,30 @@ namespace aoji_EditorUI
             EndWindows();
         }
 
+        void SyncData()
+        {
+            var termMono = TermMonobehaviour.Instance;
+            termMono.AddList(_transitionData._trrigerTerm);
+            termMono.AddList(_transitionData._boolTerms);
+        }
 
         protected override Vector2 GetWindowSize()
         {
             return new Vector2(1080, 450);
         }
+
+        #region public
+        public AbstractUIBoolTerm SetBoolTerm(AbstractUIBoolTerm term, BoolTermType type)
+        {
+            if (_transitionData._boolTerms.Contains(term))
+            {
+                _transitionData._boolTerms.Remove(term);
+            }
+            var newTerm = BoolTypeConstract.ConstractTerm(type);
+            _transitionData._boolTerms.Add(newTerm);
+            return newTerm;
+        }
+        #endregion
     }
 }
 #endif

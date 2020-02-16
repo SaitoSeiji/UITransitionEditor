@@ -7,19 +7,21 @@ using aojiru_UI;
 #if UNITY_EDITOR
 using UnityEditor;
 
-namespace aoji_EditorUI
+namespace aojiru_UI
 {
     public class BoolTermNodeSet : NodeSet<BoolTermNodeData>
     {
-        UITransitionTerm _tranData;
+        List<AbstractUIBoolTerm> _boolTermList;
+        
 
-        public BoolTermNodeSet(Vector2 firstPos, Vector2 nodeSize
-            , UITransitionTerm tranData, List<AbstractUIBoolTerm> boolTerms
+        public BoolTermNodeSet(UITermWIndow parentWindow,Vector2 firstPos, Vector2 nodeSize
+            , List<AbstractUIBoolTerm> boolTerms
             , int colorCode = 0)
-            : base(firstPos, nodeSize, colorCode)
+            : base(parentWindow, firstPos, nodeSize, colorCode)
         {
-            _tranData = tranData;
+            //_tranData = tranData;
             RawAddNode(ConvertUIBoolTerm2NodeData(boolTerms));
+            _boolTermList = boolTerms;
         }
 
         List<BoolTermNodeData> ConvertUIBoolTerm2NodeData(List<AbstractUIBoolTerm> boolTerms)
@@ -27,7 +29,7 @@ namespace aoji_EditorUI
             var result = new List<BoolTermNodeData>();
             for (int i = 0; i < boolTerms.Count; i++)
             {
-                var data = new BoolTermNodeData(this, _tranData, _tranData.GetBoolTerms()[i]);//_BoolTerms[i]);
+                var data = new BoolTermNodeData(this, _boolTermList[i]);//_BoolTerms[i]);
                 result.Add(data);
             }
             return result;
@@ -38,17 +40,16 @@ namespace aoji_EditorUI
             //_tranData.AddBoolTerm(BoolTermType.AwakeTime);
 
             //var NewData = new BoolTermNodeData(this, _tranData, _tranData._BoolTerms[_tranData._BoolTerms.Count - 1]);
-
-            var boolTerms = _tranData.GetBoolTerms();
-            boolTerms.Add(new AwakeTimeBoolTerm());
-            var NewData = new BoolTermNodeData(this, _tranData,boolTerms [boolTerms.Count - 1]);
+            //_tranData._boolTerms;
+            _boolTermList.Add(new AwakeTimeBoolTerm());
+            var NewData = new BoolTermNodeData(this, _boolTermList[_boolTermList.Count - 1]);
             base.RawAddNode(NewData);
         }
 
         protected override void RawRemoveNode(BoolTermNodeData data)
         {
             //_tranData.RemoveBoolTerm(data._boolTerm);
-            _tranData.GetBoolTerms().Remove(data._boolTerm);
+            _boolTermList.Remove(data._boolTerm);
             base.RawRemoveNode(data);
         }
     }
@@ -57,16 +58,18 @@ namespace aoji_EditorUI
     {
         BoolTermType _boolTermType;
 
-        UITransitionTerm _tranTerm;
+        //UITransitionTerm _tranTerm;
         public AbstractUIBoolTerm _boolTerm { get; private set; }
-        BoolTermNodeSet _nodeSet;
+        BoolTermNodeSet _parentNodeSet;
+        UITermWIndow _parentWindow;
 
-        public BoolTermNodeData(BoolTermNodeSet nodeSet, UITransitionTerm tranTerms, AbstractUIBoolTerm myBoolTerm)
+        public BoolTermNodeData(BoolTermNodeSet nodeSet, AbstractUIBoolTerm myBoolTerm)
         {
-            _nodeSet = nodeSet;
-            _tranTerm = tranTerms;
+            _parentNodeSet = nodeSet;
+            //_tranTerm = tranTerms;
             _boolTerm = myBoolTerm;
             _boolTermType = _boolTerm.GetTermType();
+            _parentWindow = _parentNodeSet.GetParentWindow(this);
         }
 
         public override void AbstractCallBack()
@@ -77,7 +80,9 @@ namespace aoji_EditorUI
             {
                 //SetBoolTermすると持っていた_boolTermが破棄されるので新しく代入しなおす
                 //自動で代入されなおすほうがいいかもしれない
-                _boolTerm = _tranTerm.SetBoolTerms(_boolTerm, _boolTermType);
+                _boolTerm = _parentWindow.SetBoolTerm(_boolTerm, _boolTermType);
+
+
                 //_boolTerm = _tranTerm.SetBoolTerm(_boolTerm, _boolTermType);
 
             }
@@ -101,7 +106,7 @@ namespace aoji_EditorUI
 
             if (GUILayout.Button("remove"))
             {
-                _nodeSet.RemoveNode(this);
+                _parentNodeSet.RemoveNode(this);
             }
         }
 

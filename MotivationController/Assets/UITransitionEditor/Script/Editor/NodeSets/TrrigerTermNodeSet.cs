@@ -2,21 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using aojiru_UI;
 #if UNITY_EDITOR
 using UnityEditor;
 
-namespace aoji_EditorUI
+namespace aojiru_UI
 {
     public class TrrigerTermNodeSet : NodeSet<TrrigerTermNodeData>
     {
 
-        public TrrigerTermNodeSet(Vector2 firstPos, Vector2 nodeSize
-            , UITransitionTerm term
+        public TrrigerTermNodeSet(UITermWIndow parentWindow,Vector2 firstPos, Vector2 nodeSize
+            ,AbstractUITrrigerTerm trrigerTerm
             , int colorCode = 0)
-            : base(firstPos, nodeSize, colorCode)
+            : base(parentWindow,firstPos, nodeSize, colorCode)
         {
-            RawAddNode(new TrrigerTermNodeData(this, term));
+            RawAddNode(new TrrigerTermNodeData(this,trrigerTerm));
         }
 
         public override void AddNode()
@@ -34,19 +33,18 @@ namespace aoji_EditorUI
     {
         TrrigerType _trrigerType;
 
-
-        UITransitionTerm _tranTerm;
-        AbstractUITrrigerTerm _trrigerTerm { get { return _tranTerm.GetTrriger(); } }
+        
+        AbstractUITrrigerTerm _trrigerTerm;
         TrrigerTermNodeSet _nodeSet;
+        
 
-        public TrrigerTermNodeData(TrrigerTermNodeSet nodeSet, UITransitionTerm tranTerm)
+        public TrrigerTermNodeData(TrrigerTermNodeSet nodeSet,AbstractUITrrigerTerm trrigerTerm)
         {
             _nodeSet = nodeSet;
-            _tranTerm = tranTerm;
             if (_trrigerTerm == null)
             {
                 //_tranTerm.AddTrrigerTerm(TrrigerType.None);
-                _tranTerm.SetTrriger(new NoneUITrrigerTerm());
+                _trrigerTerm = new NoneUITrrigerTerm();
             }
 
             _trrigerType = _trrigerTerm.GetTrrigerType();
@@ -59,16 +57,9 @@ namespace aoji_EditorUI
             _trrigerType = (TrrigerType)EditorGUILayout.EnumPopup("Type", _trrigerType);
             if (EditorGUI.EndChangeCheck())
             {
-                //_tranTerm.SetTrrigerTerm(_trrigerTerm, _trrigerType);
-                switch (_trrigerType)
-                {
-                    case TrrigerType.None:
-                        _tranTerm.SetTrriger(new NoneUITrrigerTerm());
-                        break;
-                    case TrrigerType.Onclick:
-                        _tranTerm.SetTrriger(new OncliclUITrrigerTerm());
-                        break;
-                }
+                //trantermの情報とどちらも修正できるか怪しい
+                _trrigerTerm = TrrigerTypeConstract.ConstractTerm(_trrigerType);
+                
             }
 
             switch (_trrigerType)

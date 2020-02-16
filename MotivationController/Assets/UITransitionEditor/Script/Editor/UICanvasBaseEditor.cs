@@ -5,7 +5,7 @@ using aojiru_UI;
 #if UNITY_EDITOR
 using UnityEditor;
 
-namespace aoji_EditorUI
+namespace aojiru_UI
 {
     [CustomEditor(typeof(UICanvasBase))]
     public class UICanvasBaseEditor : Editor
@@ -15,13 +15,14 @@ namespace aoji_EditorUI
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
+
             EditorGUILayout.Space();
 
             var canvas = target as UICanvasBase;
             EditorGUILayout.BeginVertical();
             if (GUILayout.Button("init data"))
             {
-                canvas.InitConditionParent();
+                //canvas.InitConditionParent();
             }
 
             if (GUILayout.Button("edit term"))
@@ -32,7 +33,7 @@ namespace aoji_EditorUI
 
             if (GUILayout.Button("reset data"))
             {
-                canvas.ResetData();
+                //canvas.ResetData();
             }
             int condLimit = canvas._ConditionCount - 1;
             _conditionNumber = EditorGUILayout.IntSlider("condition", _conditionNumber, 0, condLimit);

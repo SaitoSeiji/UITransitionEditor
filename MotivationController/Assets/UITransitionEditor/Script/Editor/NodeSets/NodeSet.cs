@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace aoji_EditorUI
+namespace aojiru_UI
 {
     public abstract class NodeSet<T>
         where T : NodeData
@@ -15,19 +15,22 @@ namespace aoji_EditorUI
         int _colorCode = 0;
 
         protected List<T> _nodeList = new List<T>();
+        protected UITermWIndow _parentWindow;
 
         #region コンストラクタ
-        public NodeSet(Vector2 firstPos, Vector2 nodeSize, int colorCode = 0)
+        public NodeSet(UITermWIndow parentWindow,Vector2 firstPos, Vector2 nodeSize, int colorCode = 0)
         {
+            _parentWindow = parentWindow;
             _firstPos = firstPos;
             _nodeSize = nodeSize;
             _arrangeX = true;
             _arrangeCount = 5;
             _colorCode = colorCode;
         }
-        public NodeSet(Vector2 firstPos, Vector2 nodeSize
+        public NodeSet(UITermWIndow parentWindow, Vector2 firstPos, Vector2 nodeSize
             , bool arrangeX, int arrangeCount, int colorCode = 0)
         {
+            _parentWindow = parentWindow;
             _firstPos = firstPos;
             _nodeSize = nodeSize;
             _arrangeX = arrangeX;
@@ -146,6 +149,11 @@ namespace aoji_EditorUI
                 Rect newRect = GUI.Window(i + numberSet, GetRect(i), _nodeList[i].CallBack, name + i, GetColorCodeString());
                 SetRect(i, newRect);
             }
+        }
+
+        public UITermWIndow GetParentWindow(T child)
+        {
+                return _parentWindow;
         }
         #endregion
     }

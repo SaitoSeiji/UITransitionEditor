@@ -5,7 +5,7 @@ using UnityEngine.Events;
 #if UNITY_EDITOR
 using UnityEditor;
 
-namespace aoji_EditorUI
+namespace aojiru_UI
 {
     public class DefaultWindow : EditorWindow
     {
