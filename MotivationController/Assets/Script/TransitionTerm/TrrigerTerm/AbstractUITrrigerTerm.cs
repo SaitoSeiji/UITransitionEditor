@@ -13,12 +13,11 @@ namespace aojiru_UI
 
     //UIの遷移条件　トリガー条件を管理するクラス
     //具体定期なトリガー条件は子クラスで指定
-    public abstract class AbstractUITrrigerTerm<T>:AbstractTransitionTerm<TransitionLine<T>,T>
+    public abstract class AbstractUITrrigerTerm:AbstractTransitionTerm
     {
         //SetSatisfyActionが呼ばれるタイミングを指定
         public enum CoalTiming_StaisfyAction
         {
-            AWAKE,//ボタンなどで呼ぶなら
             START,
             UPDATE//bool条件として扱うなら
         }
@@ -31,19 +30,10 @@ namespace aojiru_UI
         {
             return satisfyTrriger._Trriger;
         }
-
-        public override void AwakeAction()
+        
+        public override void InitAction()
         {
-            base.AwakeAction();
-            coalTiming = SetCoalTiming();
-            if (coalTiming == CoalTiming_StaisfyAction.AWAKE)
-            {
-                SetSatisfyAction();
-            }
-        }
-        public override void StartAction()
-        {
-            base.StartAction();
+            base.InitAction();
             if (coalTiming == CoalTiming_StaisfyAction.START)
             {
                 SetSatisfyAction();
@@ -60,18 +50,6 @@ namespace aojiru_UI
                 }
             }
         }
-        #region interfaceの実装
-        //対象のUICanvasのstateがActiveになったら呼ばれる初期化関数
-        //public void TranspotMessage_uiActive()
-        //{
-        //    satisfyTrriger._Trriger = false;
-        //}
-        //public void SetTransportParent_privete()
-        //{
-        //    var parent = MessageTransporter.FindParentTransporter(transform);
-        //    if (parent != null) parent.SetMessageTarget(gameObject);
-        //}
-        #endregion
 
         abstract protected bool SetSatisfyAction();//条件の達成を処理する関数
         abstract protected CoalTiming_StaisfyAction SetCoalTiming();//SetSatisfyActionが呼ばれるタイミングを指定

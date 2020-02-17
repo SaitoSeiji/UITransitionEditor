@@ -6,7 +6,7 @@ namespace aojiru_UI
 {
     //アクティブになってからの経過時間が条件
     //指定時間を待たずに条件を満たすことがある
-    public class AwakeTimeBoolTerm<T> : AbstractUIBoolTerm<T>
+    public class AwakeTimeBoolTerm: AbstractUIBoolTerm
     {
         //editorで使用するためにpublic　ほんとはパブリックにしたくない
         [SerializeField]float waitLength;
@@ -23,5 +23,6 @@ namespace aojiru_UI
             if (flag == null) flag.StartWait(waitLength);
             return !flag.WaitNow;
         }
+        
     }
 }

@@ -5,10 +5,11 @@ using UnityEngine;
 
 namespace aojiru_UI
 {
-    public abstract class AbstractTransitonController<T, KEY> : MonoBehaviour
-        where T : AbstractTransitionTerm<TransitionLine<KEY>, KEY>
+    public abstract class AbstractTransitonController<KEY,LINE,TERM> : MonoBehaviour
+        where LINE : AbstractTransitionLine<KEY,TERM>
+        where TERM : AbstractTransitionTerm
     {
-        protected List<T> _transitionTermList;
+        protected List<LINE> _transitionLineList;
 
         protected KEY _nowKey { get; private set; }
 
@@ -19,40 +20,29 @@ namespace aojiru_UI
         {
             InitTransitionTerm();
             _nowKey = SetFirstKey();
-            foreach (var term in _transitionTermList)
-            {
-                term.AwakeAction();
-            }
         }
-
         protected virtual void Start()
         {
-            foreach (var term in _transitionTermList)
-            {
-                term.StartAction();
-            }
+
         }
 
         protected virtual void Update()
         {
-            foreach (var term in _transitionTermList)
+            foreach (var line in _transitionLineList)
             {
-                if (term._enable) term.UpdateAction();
-
-
-                if (term.ActiveTerm(_nowKey))
+                if (line.IsActive(_nowKey))
                 {
-                    if (term.MeetTerm())
+                    if (line.PermitTransition())
                     {
-                        KeyChengeAction(term);
+                        KeyChengeAction(line);
                     }
                 }
             }
         }
 
-        protected virtual void KeyChengeAction(T term)
+        protected virtual void KeyChengeAction(LINE line)
         {
-            _nowKey = term.GetTo();
+            _nowKey = line.GetTo();
         }
     }
 }

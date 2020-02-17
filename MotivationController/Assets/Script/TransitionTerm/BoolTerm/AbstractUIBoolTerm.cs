@@ -6,7 +6,7 @@ namespace aojiru_UI
 {
 
     //UIの遷移条件　bool条件
-    public abstract class AbstractUIBoolTerm<T> : AbstractTransitionTerm<TransitionLine<T>,T>
+    public abstract class AbstractUIBoolTerm : AbstractTransitionTerm
     {
         public override bool MeetTerm()
         {

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace aojiru_UI
 {
-    public class NoneUITrrigerTerm<T> : AbstractUITrrigerTerm<T>
+    public class NoneUITrrigerTerm : AbstractUITrrigerTerm
     {
         protected override bool SetSatisfyAction()
         {

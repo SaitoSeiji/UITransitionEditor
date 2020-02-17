@@ -6,9 +6,9 @@ using UnityEngine.UI;
 namespace aojiru_UI
 {
     //指定のボタンを押すと条件を満たす
-    public class OncliclUITrrigerTerm<T> : AbstractUITrrigerTerm<T>
+    public class OncliclUITrrigerTerm : AbstractUITrrigerTerm
     {
-        [SerializeField] List<GameObjectSaver> _targetButtons;
+        [SerializeField] List<GameObjectSaver> _targetButtons=new List<GameObjectSaver>();
 
         protected override CoalTiming_StaisfyAction SetCoalTiming()
         {
@@ -32,5 +32,7 @@ namespace aojiru_UI
             _targetButtons.Add(new GameObjectSaver(holder));
             
         }
+
+
     }
 }

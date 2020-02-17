@@ -5,33 +5,39 @@ using UnityEngine;
 namespace aojiru_UI
 {
     [SerializeField]
-    public class TransitionLine<T>
+    public class AbstractTransitionLine<STATE,TERM>
+        where TERM : AbstractTransitionTerm
     {
-        [SerializeField]protected T _from;
-        [SerializeField]protected T _to;
+        [SerializeField] STATE _from;
+        [SerializeField] STATE _to;
 
         [SerializeField] int _fromInstance;
         [SerializeField] int _toInstance;
         [SerializeField] bool _isMono;
 
-        public virtual T GetFrom()
+        [SerializeField] TERM _transitionTerm;
+
+        
+
+        #region アクセス関連
+        public STATE GetFrom()
         {
             if (_isMono)
             {
-                _from = InstanceIdCash.Instance.GetId(_fromInstance).gameObject.GetComponent<T>();
+                _from = InstanceIdCash.Instance.GetId(_fromInstance).gameObject.GetComponent<STATE>();
             }
             return _from;
         }
-        public virtual T GetTo()
+        public STATE GetTo()
         {
             if (_isMono)
             {
-                _to = InstanceIdCash.Instance.GetId(_toInstance).gameObject.GetComponent<T>();
+                _to = InstanceIdCash.Instance.GetId(_toInstance).gameObject.GetComponent<STATE>();
             }
             return _to;
         }
 
-        public virtual void SetFrom(T data)
+        public void SetFrom(STATE data)
         {
             MonoBehaviour d = data as MonoBehaviour;
             if (d != null)
@@ -41,7 +47,7 @@ namespace aojiru_UI
             _from = data;
         }
 
-        public virtual void SetTo(T data)
+        public void SetTo(STATE data)
         {
             MonoBehaviour d = data as MonoBehaviour;
             if (d != null)
@@ -56,7 +62,35 @@ namespace aojiru_UI
             _isMono = true;
             var id=InstanceIdHolder.AddIdHolder(mono.gameObject);
             return id.GetInstanceID();
+        }
 
+        public void SetTerm(TERM term)
+        {
+            _transitionTerm = term;
+        }
+        #endregion
+        public virtual bool IsActive(STATE state)
+        {
+
+            bool result = state.Equals(GetFrom());
+            _transitionTerm.SetEnable(result);
+            return result;
+        }
+
+        public bool PermitTransition()
+        {
+            return _transitionTerm.MeetTerm();
+        }
+    }
+
+    [SerializeField]
+    public class UITransitonTermLine<STATE> : AbstractTransitionLine<STATE, UITransitionTerm>
+    {
+        [SerializeField] bool _selfActive;
+        public bool _SelfActive { get { return _selfActive; } }
+        public UITransitonTermLine(bool selfActive)
+        {
+            _selfActive = selfActive;
         }
     }
 }

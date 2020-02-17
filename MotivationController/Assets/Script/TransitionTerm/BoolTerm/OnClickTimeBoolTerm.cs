@@ -6,12 +6,11 @@ using UnityEngine.UI;
 namespace aojiru_UI
 {
     //ボタンを押した回数で条件達成
-    public class OnClickTimeBoolTerm<T> : AbstractUIBoolTerm<T>
+    public class OnClickTimeBoolTerm: AbstractUIBoolTerm
     {
         [SerializeField] public int _targetClickTime;//目標回数
         [System.NonSerialized]int _nowClickTime;//現在の回数
         [SerializeField] List<GameObjectSaver> _clickTargets = new List<GameObjectSaver>();
-
         
 
         protected override bool ConcreteTerm()
@@ -19,10 +18,9 @@ namespace aojiru_UI
             return _nowClickTime >= _targetClickTime;
         }
 
-        public override void AwakeAction()
+        public override void InitAction()
         {
-            base.AwakeAction();
-            //ボタンに条件を設定
+            base.InitAction();
             foreach (var btn in _clickTargets)
             {
                 btn.GetObj().GetComponent<Button>().onClick.AddListener(() => _nowClickTime++);
