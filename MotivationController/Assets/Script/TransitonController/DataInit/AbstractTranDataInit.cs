@@ -70,18 +70,18 @@ namespace aojiru_UI
     #endregion
     #region UITransitionInit
     [System.Serializable]
-    public class HandInit_UITransition_canvasBase : AbstractTranDataInit<UITransitionTerm>
+    public class HandInit_UITransition_canvasBase : AbstractTranDataInit<UITransitionTerm<UICanvasBase>>
     {
         [SerializeField] UICanvasBase[] from;
         [SerializeField] UICanvasBase[] to;
         [SerializeField] GameObject[] click;
 
-        public override List<UITransitionTerm> Init()
+        public override List<UITransitionTerm<UICanvasBase>> Init()
         {
-            var list = new List<UITransitionTerm>();
+            var list = new List<UITransitionTerm<UICanvasBase>>();
             for(int i = 0; i < from.Length; i++)
             {
-                var add = new UITransitionTerm(i==0,from[i], to[i]);
+                var add = new UITransitionTerm<UICanvasBase>(i==0,from[i], to[i]);
                 var trriger = new OncliclUITrrigerTerm<UICanvasBase>();
                 trriger.AddButton(click[i]);
                 add.SetTrriger(trriger);
@@ -97,12 +97,12 @@ namespace aojiru_UI
         }
     }
     [System.Serializable]
-    public class LoadInit_UITran_cv: AbstractTranDataInit<UITransitionTerm>
+    public class LoadInit_UITran_cv: AbstractTranDataInit<UITransitionTerm<UICanvasBase>>
     {
         [SerializeField] string key;
-        public override List<UITransitionTerm> Init()
+        public override List<UITransitionTerm<UICanvasBase>> Init()
         {
-            return FullSerializSaver.LoadAction<List<UITransitionTerm>>(key);
+            return FullSerializSaver.LoadAction<List<UITransitionTerm<UICanvasBase>>>(key);
         }
 
         public override bool InitEnable()

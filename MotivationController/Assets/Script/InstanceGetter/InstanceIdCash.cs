@@ -6,7 +6,6 @@ public class InstanceIdCash : SingletonMonoBehaviour<InstanceIdCash>
 {
     [SerializeField] bool _awakeIdCash;
     List<InstanceIdHolder> idList;
-    List<UICanvasBase> canvasList;
 
     void IdCash()
     {
@@ -31,28 +30,5 @@ public class InstanceIdCash : SingletonMonoBehaviour<InstanceIdCash>
         }
         return null;
     }
-
-    void CanvasCash()
-    {
-        var data = Resources.FindObjectsOfTypeAll(typeof(UICanvasBase));
-        canvasList = new List<UICanvasBase>();
-        foreach (var d in data)
-        {
-            canvasList.Add((UICanvasBase)d);
-        }
-    }
-
-    public UICanvasBase GetCanvas(int id)
-    {
-        if (canvasList == null) CanvasCash();
-
-        foreach (var data in canvasList)
-        {
-            if (id == data.GetInstanceID())
-            {
-                return data;
-            }
-        }
-        return null;
-    }
+    
 }

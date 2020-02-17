@@ -5,9 +5,8 @@ using UnityEngine;
 
 namespace aojiru_UI
 {
-    public abstract class AbstractTransitonController<T,TR, KEY> : MonoBehaviour
-        where T : AbstractTransitionTerm<TR, KEY>
-        where TR: TransitionLine<KEY>
+    public abstract class AbstractTransitonController<T, KEY> : MonoBehaviour
+        where T : AbstractTransitionTerm<TransitionLine<KEY>, KEY>
     {
         protected List<T> _transitionTermList;
 

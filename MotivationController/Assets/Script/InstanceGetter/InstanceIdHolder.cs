@@ -6,6 +6,8 @@ public class InstanceIdHolder : MonoBehaviour
 {
     public static InstanceIdHolder AddIdHolder(GameObject obj)
     {
+        var get=obj.GetComponent<InstanceIdHolder>();
+        if (get != null) return get;
         var add= obj.AddComponent<InstanceIdHolder>();
         return add;
     }

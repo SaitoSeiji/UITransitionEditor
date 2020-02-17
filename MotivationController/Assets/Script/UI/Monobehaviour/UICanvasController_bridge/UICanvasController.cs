@@ -7,7 +7,7 @@ namespace aojiru_UI
 {
     //UIの開閉などの機能の記述を行う
     //UICanvasが使用する
-    public class UICanvasController :AbstractTransitonController<UITransitionTerm,UICanvasTransition,UICanvasBase>
+    public class UICanvasController :AbstractTransitonController<UITransitionTerm<UICanvasBase>, UICanvasBase>
     {
         #region singleTon
         private static UICanvasController instance;
@@ -86,7 +86,7 @@ namespace aojiru_UI
         }
 
         //uiの遷移処理
-        protected override void KeyChengeAction(UITransitionTerm term)
+        protected override void KeyChengeAction(UITransitionTerm<UICanvasBase> term)
         {
             base.KeyChengeAction(term);
             TransitionCanvas(term.GetTo(), addOpen: term._SelfActive);

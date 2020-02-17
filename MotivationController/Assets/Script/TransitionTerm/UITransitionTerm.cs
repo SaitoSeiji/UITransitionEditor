@@ -6,26 +6,26 @@ namespace aojiru_UI
 {
     //UIの遷移条件を管理する
     [System.Serializable]
-    public class UITransitionTerm : AbstractTransitionTerm<UICanvasTransition, UICanvasBase>
+    public class UITransitionTerm<T> : AbstractTransitionTerm<TransitionLine<T>, T>
     {
         //bool条件をすべて満たした状態で　トリガー条件を達成すると遷移可能
         [SerializeField] bool _selfActive;//遷移時に自分をactiveのままにするかどうか
         public bool _SelfActive { get { return _selfActive; } }
-        [SerializeField] protected AbstractUITrrigerTerm<UICanvasBase> _trrigerTerm;
-        [SerializeField] protected List<AbstractUIBoolTerm<UICanvasBase>> _boolTerms = new List<AbstractUIBoolTerm<UICanvasBase>>(); //bool条件　複数設定可能
+        [SerializeField] protected AbstractUITrrigerTerm<T> _trrigerTerm;
+        [SerializeField] protected List<AbstractUIBoolTerm<T>> _boolTerms = new List<AbstractUIBoolTerm<T>>(); //bool条件　複数設定可能
 
-        public UITransitionTerm(bool selfActive, UICanvasBase from, UICanvasBase to) : base(from,to)
+        public UITransitionTerm(bool selfActive, T from, T to) : base(from,to)
         {
             _selfActive = selfActive;
         }
         #region termの登録
         //factory系の何かが使える？
-        public void SetTrriger(AbstractUITrrigerTerm<UICanvasBase> term)
+        public void SetTrriger(AbstractUITrrigerTerm<T> term)
         {
             _trrigerTerm = term;
         }
 
-        public void AddBool(AbstractUIBoolTerm<UICanvasBase> term)
+        public void AddBool(AbstractUIBoolTerm<T> term)
         {
             _boolTerms.Add(term);
         }
