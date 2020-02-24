@@ -9,16 +9,16 @@ namespace aojiru_UI
         where LINE : AbstractTransitionLine<KEY,TERM>
         where TERM : AbstractTransitionTerm
     {
-        protected List<LINE> _transitionLineList;
+        List<LINE> _transitionLineList;
 
         protected KEY _nowKey { get; private set; }
 
-        protected abstract void InitTransitionTerm();
+        protected abstract List<LINE> InitTransitionTerm();
         protected abstract KEY SetFirstKey();
 
         protected virtual void Awake()
         {
-            InitTransitionTerm();
+            _transitionLineList=InitTransitionTerm();
             _nowKey = SetFirstKey();
         }
         protected virtual void Start()
@@ -35,6 +35,7 @@ namespace aojiru_UI
                     if (line.PermitTransition())
                     {
                         KeyChengeAction(line);
+                        break;
                     }
                 }
             }

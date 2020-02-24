@@ -6,6 +6,7 @@ namespace aojiru_UI {
     public class TermMonoActor : SingletonMonoBehaviour<TermMonoActor>
     {
         List<AbstractTransitionTerm> _termList = new List<AbstractTransitionTerm>();
+        bool startIsEnd = false;
 
         public void RegisterTerm<T>(T term)
             where T:AbstractTransitionTerm
@@ -13,7 +14,16 @@ namespace aojiru_UI {
             if (!_termList.Contains(term))
             {
                 _termList.Add(term);
-                term.InitAction();
+                if(startIsEnd) term.InitAction();
+            }
+        }
+
+        private void Start()
+        {
+            startIsEnd = true;
+            for (int i = 0; i < _termList.Count; i++)
+            {
+                _termList[i].InitAction();
             }
         }
 

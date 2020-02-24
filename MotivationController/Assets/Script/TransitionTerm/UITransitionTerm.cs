@@ -42,6 +42,7 @@ namespace aojiru_UI
             }
         }
 
+        //Termが持っているinitActionが再帰的に呼ばれるようにしたい
         public override void InitAction()
         {
             base.InitAction();

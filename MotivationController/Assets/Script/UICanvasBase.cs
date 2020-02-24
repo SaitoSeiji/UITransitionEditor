@@ -8,8 +8,6 @@ namespace aojiru_UI
     public class UICanvasBase : MonoBehaviour
     {
         [System.NonSerialized]UICanvasController _uiCtrl;
-        
-
 
         public enum UISTATE
         {
@@ -19,7 +17,7 @@ namespace aojiru_UI
         }
         [SerializeField] UISTATE _nowUIState = UISTATE.CLOSE;
 
-        [SerializeField] bool canInput = false;
+        [SerializeField] bool canInput_serialize = false;
         bool CanInput
         {
             get
@@ -28,7 +26,7 @@ namespace aojiru_UI
                 if (_nowUIState != UISTATE.ACTIVE) result = false;
                 else if (_isActiveWait.WaitNow) result = false;
 
-                canInput = result;
+                canInput_serialize = result;
                 return result;
             }
         }
@@ -51,10 +49,9 @@ namespace aojiru_UI
             _nowUIState = nextState;
         }
 
-        public void ActiveInitAction()
+        void ActiveInitAction()
         {
             _isActiveWait.StartWait(0.5f);
-            //SendMessage2Target();
         }
     }
 }

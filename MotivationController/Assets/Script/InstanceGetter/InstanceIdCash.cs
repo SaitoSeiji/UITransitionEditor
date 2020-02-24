@@ -4,7 +4,6 @@ using UnityEngine;
 using aojiru_UI;
 public class InstanceIdCash : SingletonMonoBehaviour<InstanceIdCash>
 {
-    [SerializeField] bool _awakeIdCash;
     List<InstanceIdHolder> idList;
 
     void IdCash()

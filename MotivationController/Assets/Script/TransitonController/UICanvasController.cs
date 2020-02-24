@@ -73,10 +73,12 @@ namespace aojiru_UI
             base.Update();
             nowCanvas = _nowKey;
         }
-        protected override void InitTransitionTerm()
+        protected override List<UITransitonTermLine<UICanvasBase>> InitTransitionTerm()
         {
-            if (loadInit.InitEnable()) _transitionLineList = loadInit.Init();
-            else _transitionLineList = initer.Init();
+            var result = new List<UITransitonTermLine<UICanvasBase>>();
+            if (loadInit.InitEnable()) result = loadInit.Init();
+            else result = initer.Init();
+            return result;
         }
 
 

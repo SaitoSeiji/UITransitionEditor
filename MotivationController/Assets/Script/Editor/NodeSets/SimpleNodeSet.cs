@@ -19,6 +19,7 @@ namespace aoji_EditorUI
 
         public override void AddNode()
         {
+            _nodeList.Add(new SimpleNodeData());
         }
     }
 

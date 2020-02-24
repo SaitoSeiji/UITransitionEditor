@@ -11,52 +11,38 @@ namespace aojiru_UI
         [SerializeField] STATE _from;
         [SerializeField] STATE _to;
 
-        [SerializeField] int _fromInstance;
-        [SerializeField] int _toInstance;
+        [SerializeField] int _fromInstanceId;
+        [SerializeField] int _toInstanceId;
         [SerializeField] bool _isMono;
 
         [SerializeField] TERM _transitionTerm;
-
         
 
         #region アクセス関連
         public STATE GetFrom()
         {
-            if (_isMono)
-            {
-                _from = InstanceIdCash.Instance.GetId(_fromInstance).gameObject.GetComponent<STATE>();
-            }
+            if (_isMono) _from = FindObjectFromId(_fromInstanceId);
             return _from;
         }
         public STATE GetTo()
         {
-            if (_isMono)
-            {
-                _to = InstanceIdCash.Instance.GetId(_toInstance).gameObject.GetComponent<STATE>();
-            }
+            if (_isMono) _to = FindObjectFromId(_toInstanceId);
             return _to;
         }
-
         public void SetFrom(STATE data)
         {
-            MonoBehaviour d = data as MonoBehaviour;
-            if (d != null)
-            {
-                _fromInstance = SetInstanceId(d);
-            }
+            if (CheckIsMono(data)) _fromInstanceId = SetInstanceId(data as MonoBehaviour);
             _from = data;
         }
-
         public void SetTo(STATE data)
         {
-            MonoBehaviour d = data as MonoBehaviour;
-            if (d != null)
-            {
-                _toInstance = SetInstanceId(d);
-            }
+            if (CheckIsMono(data)) _toInstanceId = SetInstanceId(data as MonoBehaviour);
             _to = data;
         }
-
+        public void SetTerm(TERM term)
+        {
+            _transitionTerm = term;
+        }
         int SetInstanceId(MonoBehaviour mono)
         {
             _isMono = true;
@@ -64,10 +50,17 @@ namespace aojiru_UI
             return id.GetInstanceID();
         }
 
-        public void SetTerm(TERM term)
+        bool CheckIsMono(STATE data)
         {
-            _transitionTerm = term;
+            MonoBehaviour d = data as MonoBehaviour;
+            return d != null;
         }
+
+        STATE FindObjectFromId(int id)
+        {
+            return InstanceIdCash.Instance.GetId(id).gameObject.GetComponent<STATE>();
+        }
+
         #endregion
         public virtual bool IsActive(STATE state)
         {

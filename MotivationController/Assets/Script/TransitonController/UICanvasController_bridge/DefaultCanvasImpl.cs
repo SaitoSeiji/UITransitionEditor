@@ -21,10 +21,8 @@ namespace aojiru_UI
                 var head = _openCanvasHirtory.Peek();
                 head.ChengeUIState(UICanvasBase.UISTATE.SLEEP);
             }
-
-            target.gameObject.SetActive(true);
+            CanvasSetActive(target, true);
             _openCanvasHirtory.Push(target);
-            target.ChengeUIState(UICanvasBase.UISTATE.ACTIVE);
         }
 
         public override void CloseCanvas(UICanvasBase nextCanvas, bool lastOpen)
@@ -35,23 +33,21 @@ namespace aojiru_UI
                 {
                     //nextCanvasより上の階層のものをすべて閉じる
                     //lastOpen=falseならnextCanvasも閉じる
-                    var next = _openCanvasHirtory.Peek();
-                    if (next != nextCanvas)
+                    var topCanvas = _openCanvasHirtory.Peek();
+                    if (topCanvas != nextCanvas)
                     {
                         _openCanvasHirtory.Pop();
-                        next.gameObject.SetActive(false);
-                        next.ChengeUIState(UICanvasBase.UISTATE.CLOSE);
+                        CanvasSetActive(topCanvas, false);
                     }
-                    else if (next == nextCanvas && !lastOpen)
+                    else if (topCanvas == nextCanvas && !lastOpen)
                     {
                         _openCanvasHirtory.Pop();
-                        next.gameObject.SetActive(false);
-                        next.ChengeUIState(UICanvasBase.UISTATE.CLOSE);
+                        CanvasSetActive(topCanvas, false);
                         break;
                     }
-                    else if (next == nextCanvas && lastOpen)
+                    else if (topCanvas == nextCanvas && lastOpen)
                     {
-                        next.ChengeUIState(UICanvasBase.UISTATE.ACTIVE);
+                        CanvasSetActive(topCanvas, true);
                         break;
                     }
                 }
@@ -76,5 +72,12 @@ namespace aojiru_UI
             return _openCanvasHirtory.Contains(target);
         }
 
+
+        void CanvasSetActive(UICanvasBase obj,bool active)
+        {
+            obj.gameObject.SetActive(active);
+            if (active) obj.ChengeUIState(UICanvasBase.UISTATE.ACTIVE);
+            else obj.ChengeUIState(UICanvasBase.UISTATE.CLOSE);
+        }
     }
 }
