@@ -7,8 +7,6 @@ namespace aojiru_UI
     //UIの1ページを担当するCanvasにつける 及びそれを表す
     public class UICanvasBase : MonoBehaviour
     {
-        [System.NonSerialized]UICanvasController _uiCtrl;
-
         public enum UISTATE
         {
             ACTIVE,//active=trueで入力を受け付ける
@@ -35,10 +33,6 @@ namespace aojiru_UI
         [System.NonSerialized] TimeFlag _isActiveWait = new TimeFlag();
         #endregion
 
-        private void Awake()
-        {
-            _uiCtrl = UICanvasController.Instance;
-        }
 
         public void ChengeUIState(UISTATE nextState)
         {
@@ -47,6 +41,9 @@ namespace aojiru_UI
                 ActiveInitAction();
             }
             _nowUIState = nextState;
+
+            if (_nowUIState == UISTATE.CLOSE) gameObject.SetActive(false);
+            else gameObject.SetActive(true);
         }
 
         void ActiveInitAction()

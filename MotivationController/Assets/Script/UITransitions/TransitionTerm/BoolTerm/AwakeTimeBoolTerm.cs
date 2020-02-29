@@ -11,7 +11,7 @@ namespace aojiru_UI
         //editorで使用するためにpublic　ほんとはパブリックにしたくない
         [SerializeField]float waitLength;
 
-        [System.NonSerialized] TimeFlag flag;
+        [System.NonSerialized] TimeFlag flag=new TimeFlag();
         protected override void EnableAction()
         {
             base.EnableAction();
@@ -24,5 +24,10 @@ namespace aojiru_UI
             return !flag.WaitNow;
         }
         
+
+        public void SetWaitLength(float t)
+        {
+            waitLength = t;
+        }
     }
 }

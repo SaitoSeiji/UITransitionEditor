@@ -21,11 +21,12 @@ namespace aojiru_UI
                 var head = _openCanvasHirtory.Peek();
                 head.ChengeUIState(UICanvasBase.UISTATE.SLEEP);
             }
-            CanvasSetActive(target, true);
+            CanvasSetState(target, true);
+            target.GetComponent<Canvas>().sortingOrder = CaluculateNextSortOrder();
             _openCanvasHirtory.Push(target);
         }
 
-        public override void CloseCanvas(UICanvasBase nextCanvas, bool lastOpen)
+        public override void CloseCanvas(UICanvasBase nextCanvas)
         {
             if (_openCanvasHirtory.Contains(nextCanvas))
             {
@@ -33,23 +34,9 @@ namespace aojiru_UI
                 {
                     //nextCanvasより上の階層のものをすべて閉じる
                     //lastOpen=falseならnextCanvasも閉じる
-                    var topCanvas = _openCanvasHirtory.Peek();
-                    if (topCanvas != nextCanvas)
-                    {
-                        _openCanvasHirtory.Pop();
-                        CanvasSetActive(topCanvas, false);
-                    }
-                    else if (topCanvas == nextCanvas && !lastOpen)
-                    {
-                        _openCanvasHirtory.Pop();
-                        CanvasSetActive(topCanvas, false);
-                        break;
-                    }
-                    else if (topCanvas == nextCanvas && lastOpen)
-                    {
-                        CanvasSetActive(topCanvas, true);
-                        break;
-                    }
+                    var topCanvas = _openCanvasHirtory.Pop();
+                    CanvasSetState(topCanvas, false);
+                    if (topCanvas == nextCanvas) break;
                 }
             }
             else
@@ -60,8 +47,10 @@ namespace aojiru_UI
                 return;
             }
         }
-        public override int CaluculateNextSortOrder()
+        protected override int CaluculateNextSortOrder()
         {
+
+            if (_openCanvasHirtory.Count==0) return 0;
             var head = _openCanvasHirtory.Peek();
             return head.GetComponent<Canvas>().sortingOrder + 1;
         }
@@ -73,9 +62,8 @@ namespace aojiru_UI
         }
 
 
-        void CanvasSetActive(UICanvasBase obj,bool active)
+        void CanvasSetState(UICanvasBase obj, bool active)
         {
-            obj.gameObject.SetActive(active);
             if (active) obj.ChengeUIState(UICanvasBase.UISTATE.ACTIVE);
             else obj.ChengeUIState(UICanvasBase.UISTATE.CLOSE);
         }

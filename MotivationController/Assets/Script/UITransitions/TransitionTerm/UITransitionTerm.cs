@@ -41,16 +41,40 @@ namespace aojiru_UI
                 return false;
             }
         }
-
-        //Termが持っているinitActionが再帰的に呼ばれるようにしたい
+        #region あんまり意味のない継承
+        //再帰的に呼ばれるようにしたい
         public override void InitAction()
         {
             base.InitAction();
-            TermMonoActor.Instance.RegisterTerm(_trrigerTerm);
+            var regist = MonoActionRegister.Instance;
+            regist.RegisterAwakeAction(()=>_trrigerTerm.InitAction());
+            regist.RegisterUpdateAction(() => _trrigerTerm.UpdateAction());
             foreach(var data in _boolTerms)
             {
-                TermMonoActor.Instance.RegisterTerm(data);
+                regist.RegisterAwakeAction(() => data.InitAction());
+                regist.RegisterUpdateAction(() => data.UpdateAction());
             }
         }
+
+        protected override void EnableAction()
+        {
+            base.EnableAction();
+            _trrigerTerm.SetEnable(true);
+            foreach(var term in _boolTerms)
+            {
+                term.SetEnable(true);
+            }
+        }
+
+        protected override void DisableAction()
+        {
+            base.DisableAction();
+            _trrigerTerm.SetEnable(false);
+            foreach (var term in _boolTerms)
+            {
+                term.SetEnable(false);
+            }
+        }
+        #endregion
     }
 }

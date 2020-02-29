@@ -4,13 +4,6 @@ using UnityEngine;
 
 namespace aojiru_UI
 {
-    public enum TrrigerType
-    {
-        None,//非enable
-        Onclick//クリックすると反応
-    }
-
-
     //UIの遷移条件　トリガー条件を管理するクラス
     //具体定期なトリガー条件は子クラスで指定
     public abstract class AbstractUITrrigerTerm:AbstractTransitionTerm
@@ -34,6 +27,7 @@ namespace aojiru_UI
         public override void InitAction()
         {
             base.InitAction();
+            coalTiming = SetCoalTiming();
             if (coalTiming == CoalTiming_StaisfyAction.START)
             {
                 SetSatisfyAction();
@@ -58,6 +52,13 @@ namespace aojiru_UI
         protected void SetSatisfyTrriger(bool flag)
         {
             satisfyTrriger._Trriger = flag;
+        }
+
+        //activeになったら初期化
+        protected override void EnableAction()
+        {
+            base.EnableAction();
+            satisfyTrriger._Trriger = false;
         }
     }
 }

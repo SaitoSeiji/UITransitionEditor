@@ -34,7 +34,9 @@ namespace aojiru_UI
         {
             if (!inited)
             {
-                TermMonoActor.Instance.RegisterTerm(this);
+                var register = MonoActionRegister.Instance;
+                register.RegisterAwakeAction(() => InitAction());
+                register.RegisterUpdateAction(() => UpdateAction());
                 inited = true;
             }
         }

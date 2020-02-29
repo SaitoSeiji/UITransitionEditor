@@ -22,9 +22,9 @@ namespace aojiru_UI
 
         //履歴にあるキャンバスまで閉じる
         //lastOpen=trueならnextCanvasは閉じない
-        public abstract void CloseCanvas(UICanvasBase nextCanvas, bool lastOpen);
+        public abstract void CloseCanvas(UICanvasBase nextCanvas);
 
         //次のsortOrderを計算
-        public abstract int CaluculateNextSortOrder();
+       protected abstract int CaluculateNextSortOrder();
     }
 }
