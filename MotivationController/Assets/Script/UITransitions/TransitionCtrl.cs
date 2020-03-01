@@ -17,9 +17,10 @@ namespace aojiru_UI
         {
             _myBoard = myBoard;
             _nowState = myBoard.FirstState;
+            AwakeFirstState();
         }
 
-        public void AwakeFirstState()
+        void AwakeFirstState()
         {
             _nowState.SetActive(true);
         }

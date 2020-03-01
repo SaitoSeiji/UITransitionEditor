@@ -4,7 +4,7 @@ using UnityEngine;
 using aojiru_UI;
 using DataSaver;
 
-public class CanvasBaseCtrl : MonoBehaviour
+public class CanvasBaseCtrl : BoardMonoBehaviour
 {
     #region builder
     [SerializeField] TestBuilderMono_case2 initer;
@@ -12,37 +12,42 @@ public class CanvasBaseCtrl : MonoBehaviour
     #endregion 
 
     TransitionState _nowState;
-    MonoTranBoard _myBoard;
-    TransitionPin _tranCtrl;
     DefaultCanvasImpl _defaultImpl;
 
-    private void Start()
+    protected override TransitionBoard InitBoard()
     {
+        //ボードの作成
+        MonoTranBoard result;
         if (initer2.LoadEnable())
         {
-            _myBoard = (MonoTranBoard)initer2.CreateBoard();
+            result = (MonoTranBoard)initer2.CreateBoard();
             Debug.Log("load");
         }
         else
         {
-            _myBoard = (MonoTranBoard)initer.CreateBoard();
+            result = (MonoTranBoard)initer.CreateBoard();
         }
+        return result;
+    }
 
-        _tranCtrl = _myBoard.CreateCtrl();
-        _tranCtrl.AwakeFirstState();
-        _nowState = _tranCtrl._nowState;
+    protected override void Start()
+    {
+        base.Start();
+
+        _nowState = _tranPin._nowState;
         _defaultImpl = new DefaultCanvasImpl(GetCanvasFromState(_nowState));
     }
 
-    private void Update()
+    protected override void Update()
     {
-        _tranCtrl.StateAction();
-        if (_tranCtrl.ChengedState)
+        base.Update();
+        if (_tranPin.ChengedState)
         {
-            ChengeStateAction(_nowState, _tranCtrl._nowState);
-            _nowState = _tranCtrl._nowState;
+            ChengeStateAction(_nowState, _tranPin._nowState);
+            _nowState = _tranPin._nowState;
         }
     }
+    
 
     void ChengeStateAction(TransitionState before, TransitionState next)
     {
@@ -60,13 +65,14 @@ public class CanvasBaseCtrl : MonoBehaviour
     
     UICanvasBase GetCanvasFromState(TransitionState state)
     {
-        return _myBoard.GetObject(state).GetComponent<UICanvasBase>();
+        MonoTranBoard myBoard = (MonoTranBoard)_tranBoard;
+        return myBoard.GetObject(state).GetComponent<UICanvasBase>();
     }
 
     [ContextMenu("save")]
     public void SaveAction()
     {
-        _myBoard = (MonoTranBoard)initer.CreateBoard();
-        FullSerializSaver.SaveAction(_myBoard, initer.saveKey);
+        _tranBoard = (MonoTranBoard)initer.CreateBoard();
+        FullSerializSaver.SaveAction(_tranBoard, initer.saveKey);
     }
 }

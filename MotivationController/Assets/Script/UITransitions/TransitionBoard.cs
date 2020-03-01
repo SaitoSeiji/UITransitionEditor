@@ -14,7 +14,7 @@ namespace aojiru_UI
 
         [SerializeField]protected List<AbstractTransitionLine> _lineList = new List<AbstractTransitionLine>();
         
-        public TransitionPin CreateCtrl()
+        public TransitionPin CreatePin()
         {
             return new TransitionPin(this);
         }
