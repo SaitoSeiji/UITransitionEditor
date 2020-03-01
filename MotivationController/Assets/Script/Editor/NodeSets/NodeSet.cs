@@ -147,6 +147,18 @@ namespace aoji_EditorUI
                 SetRect(i, newRect);
             }
         }
+
+        public T GetClickNode(Vector2 pos)
+        {
+            foreach(var node in _nodeList)
+            {
+                if (node.GetRect().Contains(pos))
+                {
+                    return node;
+                }
+            }
+            return null;
+        }
         #endregion
     }
 
@@ -172,6 +184,6 @@ namespace aoji_EditorUI
             AbstractCallBack();
         }
         public abstract void AbstractCallBack();
-
+        
     }
 }
