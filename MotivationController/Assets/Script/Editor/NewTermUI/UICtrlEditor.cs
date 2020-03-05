@@ -15,7 +15,8 @@ namespace aoji_EditorUI
             base.OnInspectorGUI();
             if (GUILayout.Button("openEditor"))
             {
-                UITransitionWindow.OpenWindow();
+                //UITransitionWindow.OpenWindow();
+                NodeWindow.OpenWindow();
             }
         }
     }
