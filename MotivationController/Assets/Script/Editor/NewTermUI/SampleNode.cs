@@ -11,6 +11,7 @@ namespace aoji_EditorUI
     {
         TextField inputText;
         ObjectField objectInput;
+        public GameObject obj { get { return (GameObject)objectInput.value; } }
 
         public SampleNode()
         {

@@ -8,6 +8,8 @@ namespace aoji_EditorUI
 {
     public class SanpleGraphView : GraphView
     {
+        List<SampleNode> nodeList = new List<SampleNode>();
+
         public SanpleGraphView() : base()
         {
             //ズーム機能の追加
@@ -22,7 +24,9 @@ namespace aoji_EditorUI
             //右クリックで追加できるようになった
             nodeCreationRequest += context =>
             {
-                AddElement(new SampleNode());
+                var newNode = new SampleNode();
+                AddElement(newNode);
+                nodeList.Add(newNode);
             };
         }
 
@@ -47,21 +51,51 @@ namespace aoji_EditorUI
             return compatiblePorts;
         }
 
+        
+
         public void Test()
         {
             Debug.Log("hoge");
         }
 
-        public bool a()
+        public bool IsSelectArrow()
         {
-            bool result = false;
-            foreach (var sel in selection)
+            return GetSelectEdge() != null;
+        }
+
+        public (GameObject input,GameObject output) GetNowArrowsNode()
+        {
+            GameObject input = null;
+            GameObject outPut = null;
+
+            var sel = GetSelectEdge();
+            if (sel == null) return (null, null);
+
+            foreach (var port in ports.ToList())
             {
-                if (sel.GetType() == typeof(Edge))
+                foreach(var edge in port.connections)
                 {
-                    result = true;
+                    if (edge == sel)
+                    {
+                        var node = port.node as SampleNode;
+                        if (port.direction == Direction.Input)
+                        {
+                            input = node.obj;
+                        }
+                        else
+                        {
+                            outPut = node.obj;
+                        }
+                    }
                 }
             }
+            return (input,outPut);
+        }
+
+        public Edge GetSelectEdge()
+        {
+            if (selection.Count != 1) return null;
+            var result = selection[0] as Edge;
             return result;
         }
     }
