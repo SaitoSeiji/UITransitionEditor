@@ -7,24 +7,21 @@ using UnityEngine.UIElements;
 
 namespace aoji_EditorUI
 {
-    public class SampleNode : Node
+    public class UIBaseNode : Node
     {
-        TextField inputText;
         ObjectField objectInput;
         public GameObject obj { get { return (GameObject)objectInput.value; } }
 
-        public SampleNode()
+        public UIBaseNode()
         {
-            title = "Sample";
+            title = "UIBase";
 
             var inputPort = Port.Create<Edge>(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi, typeof(Port));
             inputContainer.Add(inputPort);
 
             var outputPort = Port.Create<Edge>(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, typeof(Port));
             outputContainer.Add(outputPort);
-
-            inputText = new TextField();
-            mainContainer.Add(inputText);
+            
 
             objectInput = new ObjectField();
             objectInput.objectType = typeof(GameObject);

@@ -6,12 +6,13 @@ using UnityEngine.UIElements;
 
 namespace aoji_EditorUI
 {
-    public class SanpleGraphView : GraphView
+    public class UIBaseGraphView : GraphView
     {
-        List<SampleNode> nodeList = new List<SampleNode>();
+        public List<UIBaseNode> _nodeList { get; private set; }
 
-        public SanpleGraphView() : base()
+        public UIBaseGraphView() : base()
         {
+            _nodeList = new List<UIBaseNode>();
             //ズーム機能の追加
             SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
 
@@ -24,10 +25,11 @@ namespace aoji_EditorUI
             //右クリックで追加できるようになった
             nodeCreationRequest += context =>
             {
-                var newNode = new SampleNode();
+                var newNode = new UIBaseNode();
                 AddElement(newNode);
-                nodeList.Add(newNode);
+                _nodeList.Add(newNode);
             };
+            
         }
 
         //ノードを接続するための関数
@@ -53,17 +55,7 @@ namespace aoji_EditorUI
 
         
 
-        public void Test()
-        {
-            Debug.Log("hoge");
-        }
-
-        public bool IsSelectArrow()
-        {
-            return GetSelectEdge() != null;
-        }
-
-        public (GameObject input,GameObject output) GetNowArrowsNode()
+        public (GameObject input,GameObject output) GetNowArrowsNodeObj()
         {
             GameObject input = null;
             GameObject outPut = null;
@@ -77,7 +69,7 @@ namespace aoji_EditorUI
                 {
                     if (edge == sel)
                     {
-                        var node = port.node as SampleNode;
+                        var node = port.node as UIBaseNode;
                         if (port.direction == Direction.Input)
                         {
                             input = node.obj;
@@ -90,6 +82,13 @@ namespace aoji_EditorUI
                 }
             }
             return (input,outPut);
+        }
+
+
+
+        public bool IsSelectEdge()
+        {
+            return GetSelectEdge() != null;
         }
 
         public Edge GetSelectEdge()

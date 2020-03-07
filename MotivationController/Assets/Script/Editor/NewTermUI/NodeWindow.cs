@@ -6,6 +6,34 @@ using UnityEditor.Experimental.GraphView;
 
 namespace aoji_EditorUI
 {
+    [System.Serializable]
+    public class EdgeDataList
+    {
+        [SerializeField]Dictionary<Edge, List<TermNode>> _edgeData = new Dictionary<Edge, List<TermNode>>();
+
+
+        public void StartUpDic(Edge select)
+        {
+            if (_edgeData.ContainsKey(select))
+            {
+            }
+            else
+            {
+                _edgeData.Add(select, new List<TermNode>());
+            }
+        }
+
+        public void UpdateDic(Edge select,List<TermNode> nodeList)
+        {
+            _edgeData[select] = nodeList;
+        }
+
+        public List<TermNode> GetList(Edge key)
+        {
+            return _edgeData[key];
+        }
+    }
+
     public class NodeWindow : DefaultWindow
     {
         public static void OpenWindow()
@@ -13,99 +41,72 @@ namespace aoji_EditorUI
             ShowWindow<NodeWindow>();
         }
 
-        public SanpleGraphView graphView { get; private set; }
-        TermGraphView panel;
-        Dictionary<Edge, List<TermNode>> edgeData = new Dictionary<Edge, List<TermNode>>();
-        Edge _nowSelectEdge;
-        Edge _beforeSelectEdge;
-        bool switchNow = false;
-
+        public UIBaseGraphView _uiBaseGraphView { get; private set; }
+        TermGraphView _termGraphView;
+        
+        UpdateNowBefore<Edge> _selectEdge=new UpdateNowBefore<Edge>();
+        EdgeDataList _edgeDataList = new EdgeDataList();
         private void OnGUI()
         {
-            //現在の選択edgeの取得及びswitchNowの設定
-            if (_nowSelectEdge == null)
+            _selectEdge.UpdateNowValue(_uiBaseGraphView.GetSelectEdge());
+            if (_selectEdge.SwitchTrriger)
             {
-                if (graphView.IsSelectArrow())
+                if (_selectEdge.beforeValue != null)
                 {
-                    _nowSelectEdge = graphView.GetSelectEdge();
-                    switchNow = true;
-                }
-            }
-            else
-            {
-                if (!graphView.IsSelectArrow())
-                {
-                    _beforeSelectEdge = _nowSelectEdge;
-                    _nowSelectEdge = null;
-                    switchNow = true;
-                }
-                else if (_nowSelectEdge != graphView.GetSelectEdge())
-                {
-                    _beforeSelectEdge = _nowSelectEdge;
-                    _nowSelectEdge = graphView.GetSelectEdge();
-                    switchNow = true;
-                }
-            }
-
-            //選択しているedgeが切り替わった時
-            if (switchNow)
-            {
-                if (_beforeSelectEdge != null)
-                {
-                    UpdateDic(_beforeSelectEdge);
-                    _beforeSelectEdge = null;
+                    _edgeDataList.UpdateDic(_selectEdge.beforeValue,_termGraphView._nodeList);
                 }
                 ResetPanelContent();
-
-                if (_nowSelectEdge == null)
+                if (_selectEdge.nowValue != null)
                 {
+                    _edgeDataList.StartUpDic(_selectEdge.nowValue);
+                    SetPanelContent(_selectEdge.nowValue);
                 }
-                else
-                {
-                    StartUpDic(_nowSelectEdge);
-                }
-                switchNow = false;
             }
         }
 
         override protected void OnEnable()
         {
             base.OnEnable();
-            graphView = new SanpleGraphView()
-            {
-                style = { flexGrow = 1 }
-            };
 
-            rootVisualElement.Add(graphView);
-            panel = new TermGraphView(this)
+            //applyボタンの生成
+            var bt = new Button(()=>applyButtonAction());
+            bt.text = "apply";
+            rootVisualElement.Add(bt);
+
+            //uiBaseGraphViewの生成
+            _uiBaseGraphView = new UIBaseGraphView()
             {
                 style = { flexGrow = 1 }
             };
-            rootVisualElement.Add(panel);
+            rootVisualElement.Add(_uiBaseGraphView);
+
+            //_termGraphViewの生成
+            _termGraphView = new TermGraphView(this)
+            {
+                style = { flexGrow = 1 }
+            };
+            rootVisualElement.Add(_termGraphView);
 
         }
         
         void ResetPanelContent()
         {
-            panel.ClearList();
+            _termGraphView.ClearList();
+        }
+
+        void SetPanelContent(Edge select)
+        {
+            _termGraphView.SetNodeList(_edgeDataList.GetList(select));
         }
         
 
-        void StartUpDic(Edge select)
-        {
-            if (edgeData.ContainsKey(select))
-            {
-                panel.SetNodeList(edgeData[select]);
-            }
-            else
-            {
-                edgeData.Add(select, new List<TermNode>());
-            }
-        }
 
-        void UpdateDic(Edge select)
+        void applyButtonAction()
         {
-            edgeData[select] = panel._nodeList;
+            Debug.Log("apply:まだ実装してないよ");
+            var test = new BoardCreator_fromEditor();
+            test.SetState(_uiBaseGraphView);
+            test.TestSetState();
         }
     }
 }
