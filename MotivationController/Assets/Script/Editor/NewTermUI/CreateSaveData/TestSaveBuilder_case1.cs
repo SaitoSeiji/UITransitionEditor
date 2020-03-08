@@ -6,8 +6,8 @@ namespace aoji_EditorUI
 {
     public class TestSaveBuilder_case1 : TestBoardBuilder
     {
-        BoardCreator_fromEditor creator;
-        public TestSaveBuilder_case1(BoardCreator_fromEditor c) : base()
+        SaveBuildePrepare creator;
+        public TestSaveBuilder_case1(SaveBuildePrepare c) : base()
         {
             creator = c;
         }
@@ -30,17 +30,30 @@ namespace aoji_EditorUI
 
         protected override void AddLine()
         {
-
+            for(int i = 0; i < creator.lineConnectList.Count; i++)
+            {
+                var line = new UITransitonTermLine(creator.lineConnectList[i].active);
+                myBoard.AddLine(line);
+            }
         }
 
         protected override void SetLineFromTo()
         {
-            throw new System.NotImplementedException();
+            for(int i = 0; i < creator.lineConnectList.Count; i++)
+            {
+                myBoard.SetLineFromTo(
+                    from:creator.lineConnectList[i].from
+                    ,to:creator.lineConnectList[i].to
+                    , line:i);
+            }
         }
 
         protected override void SetTerm()
         {
-            throw new System.NotImplementedException();
+            for(int i = 0; i < creator.linesTermData.Count; i++)
+            {
+                myBoard.SetTerm(creator.linesTermData[i].term,creator.linesTermData[i].line);
+            }
         }
     }
 }

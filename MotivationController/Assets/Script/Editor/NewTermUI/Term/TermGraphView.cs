@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
+using UnityEditor.UIElements;
 
 namespace aoji_EditorUI
 {
@@ -10,6 +11,8 @@ namespace aoji_EditorUI
     public class TermGraphView : GraphView
     {
         public List<TermNode> _nodeList { get; private set; }
+        public bool IsActive { get { return isActiveToggle.value; } }
+        Toggle isActiveToggle;
 
         Rect firstRect = new Rect(0,0,200,200);
 
@@ -18,6 +21,11 @@ namespace aoji_EditorUI
         public TermGraphView(NodeWindow win) : base()
         {
             _nodeList = new List<TermNode>();
+
+            isActiveToggle = new Toggle("selfActive");
+            Add(isActiveToggle);
+            
+            
 
             _myWindow = win;
             //ズーム機能の追加
@@ -86,9 +94,10 @@ namespace aoji_EditorUI
                 RemoveElement(node);
             }
             _nodeList = new List<TermNode>();
+            isActiveToggle.value = false;
         }
 
-        public void SetNodeList(List<TermNode> newNodeList)
+        public void SetNodeList(List<TermNode> newNodeList,bool active)
         {
             _nodeList = new List<TermNode>();
 
@@ -96,6 +105,7 @@ namespace aoji_EditorUI
             {
                 AddNode(newNodeList[i] as TermNode);
             }
+            isActiveToggle.value = active;
         }
     }
 }

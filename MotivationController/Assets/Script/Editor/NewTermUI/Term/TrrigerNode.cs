@@ -4,10 +4,11 @@ using UnityEngine;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
+using aojiru_UI;
 
 namespace aoji_EditorUI
 {
-    public class TrrigerNode : TermNode
+    public abstract class TrrigerNode : TermNode
     {
     }
 
@@ -16,6 +17,11 @@ namespace aoji_EditorUI
         public NoneTrrigerNode() : base()
         {
             title = "NoneTrrigerTerm";
+        }
+
+        public override AbstractTransitionTerm GetTerm()
+        {
+            return new NoneUITrrigerTerm();
         }
     }
 
@@ -31,6 +37,13 @@ namespace aoji_EditorUI
             btInput = new ObjectField();
             btInput.objectType = typeof(UnityEngine.UI.Button);
             mainContainer.Add(btInput);
+        }
+
+        public override AbstractTransitionTerm GetTerm()
+        {
+            var term = new OncliclUITrrigerTerm();
+            term.AddButton(button.gameObject);
+            return term;
         }
     }
 }

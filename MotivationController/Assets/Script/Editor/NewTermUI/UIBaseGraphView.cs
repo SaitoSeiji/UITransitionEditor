@@ -53,38 +53,31 @@ namespace aoji_EditorUI
             return compatiblePorts;
         }
 
-        
-
-        public (GameObject input,GameObject output) GetNowArrowsNodeObj()
+        public (UIBaseNode from, UIBaseNode to) GetArrowNode(Edge target)
         {
-            GameObject input = null;
-            GameObject outPut = null;
 
-            var sel = GetSelectEdge();
-            if (sel == null) return (null, null);
-
+            UIBaseNode from = null;
+            UIBaseNode to = null;
             foreach (var port in ports.ToList())
             {
-                foreach(var edge in port.connections)
+                foreach (var edge in port.connections)
                 {
-                    if (edge == sel)
+                    if (edge == target)
                     {
                         var node = port.node as UIBaseNode;
-                        if (port.direction == Direction.Input)
+                        if (port.direction == Direction.Output)
                         {
-                            input = node.obj;
+                            from = node;
                         }
                         else
                         {
-                            outPut = node.obj;
+                            to = node;
                         }
                     }
                 }
             }
-            return (input,outPut);
+            return (from, to);
         }
-
-
 
         public bool IsSelectEdge()
         {

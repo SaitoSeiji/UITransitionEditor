@@ -9,9 +9,11 @@ namespace aojiru_UI
     public class UITransitionTerm : AbstractTransitionTerm
     {
         //bool条件をすべて満たした状態で　トリガー条件を達成すると遷移可能
-        [SerializeField] protected AbstractUITrrigerTerm _trrigerTerm;
-        [SerializeField] protected List<AbstractUIBoolTerm> _boolTerms = new List<AbstractUIBoolTerm>(); //bool条件　複数設定可能
+        [SerializeField] public AbstractUITrrigerTerm _trrigerTerm { get; protected set; }
+
+        [SerializeField] public List<AbstractUIBoolTerm> _boolTerms=new List<AbstractUIBoolTerm>();
         
+
         #region termの登録
         //factory系の何かが使える？
         public void SetTrriger(AbstractUITrrigerTerm term)
@@ -21,6 +23,7 @@ namespace aojiru_UI
 
         public void AddBool(AbstractUIBoolTerm term)
         {
+            if (_boolTerms == null) _boolTerms = new List<AbstractUIBoolTerm>();
             _boolTerms.Add(term);
         }
         #endregion
@@ -41,6 +44,8 @@ namespace aojiru_UI
                 return false;
             }
         }
+
+
         #region あんまり意味のない継承
         //再帰的に呼ばれるようにしたい
         public override void InitAction()

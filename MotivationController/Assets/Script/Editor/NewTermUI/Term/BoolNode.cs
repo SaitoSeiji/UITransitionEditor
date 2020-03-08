@@ -4,10 +4,11 @@ using UnityEngine;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
+using aojiru_UI;
 
 namespace aoji_EditorUI
 {
-    public class BoolNode : TermNode
+    public abstract class BoolNode : TermNode
     {
 
     }
@@ -23,6 +24,13 @@ namespace aoji_EditorUI
             waitTimeField = new FloatField("waitTime");
             mainContainer.Add(waitTimeField);
 
+        }
+
+        public override AbstractTransitionTerm GetTerm()
+        {
+            var term =new AwakeTimeBoolTerm();
+            term.SetWaitLength(waitTime);
+            return term;
         }
     }
 }

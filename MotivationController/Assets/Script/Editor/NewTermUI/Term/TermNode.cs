@@ -5,10 +5,11 @@ using UnityEngine.UI;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
+using aojiru_UI;
 
 namespace aoji_EditorUI
 {
-    public class TermNode : Node
+    public abstract class TermNode : Node
     {
 
         public TermNode()
@@ -16,6 +17,6 @@ namespace aoji_EditorUI
             
         }
 
-        
+        public abstract AbstractTransitionTerm GetTerm();
     }
 }
