@@ -6,6 +6,14 @@ using System.Linq;
 //factoryMethodを使ってみたが微妙
 namespace aojiru_UI
 {
+    public class State_UIBaseFactory : TransitionStateFactory
+    {
+        protected override Content CreateMethod()
+        {
+            return new State_UIBase(this);
+        }
+    }
+
     public class TransitionStateFactory : Factory
     {
         List<TransitionState> _stateList = new List<TransitionState>();
@@ -21,8 +29,9 @@ namespace aojiru_UI
             _stateList.Add(newState);
             newState.SetStateKey(_stateList.Count);
         }
-
     }
+
+
 
     public class TransitionState : Content
     {
@@ -86,6 +95,43 @@ namespace aojiru_UI
         public override void Use()
         {
             throw new System.NotImplementedException();
+        }
+    }
+
+    public class State_UIBase : TransitionState
+    {
+        public State_UIBase(TransitionStateFactory fact) : base(fact)
+        {
+
+        }
+
+        GameObject uiBase;
+        public GameObject UIBase
+        {
+            get
+            {
+                if (uiBase == null)
+                {
+                    var cash = InstanceIdCash.Instance.GetId(BaseId);
+                    uiBase = cash.gameObject;
+                }
+                return uiBase;
+            }
+            private set
+            {
+                uiBase = value;
+            }
+        }
+        public int BaseId { get; private set; }
+
+        public void SetUIBase(GameObject obj)
+        {
+            UIBase = obj;
+        }
+
+        public void SetBaseId(int id)
+        {
+            BaseId = id;
         }
     }
 }

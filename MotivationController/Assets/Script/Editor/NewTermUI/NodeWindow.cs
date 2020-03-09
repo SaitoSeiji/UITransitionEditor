@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor.Experimental.GraphView;
+using aojiru_UI;
 
 namespace aoji_EditorUI
 {
     [System.Serializable]
-    public class EdgeDataList
+    public class ArrowDataList
     {
         [SerializeField] Dictionary<Edge, (List<TermNode> term,bool active)> _edgeData = new Dictionary<Edge, (List<TermNode>,bool)>();
 
@@ -50,7 +51,7 @@ namespace aoji_EditorUI
         TermGraphView _termGraphView;
         
         UpdateNowBefore<Edge> _selectEdge=new UpdateNowBefore<Edge>();
-        EdgeDataList _edgeDataList = new EdgeDataList();
+        ArrowDataList _edgeDataList = new ArrowDataList();
         private void OnGUI()
         {
             _selectEdge.UpdateNowValue(_uiBaseGraphView.GetSelectEdge());
@@ -65,9 +66,6 @@ namespace aoji_EditorUI
                 {
                     _edgeDataList.StartUpDic(_selectEdge.nowValue);
                     SetPanelContent(_selectEdge.nowValue);
-
-                    //var nowNodeObj = _uiBaseGraphView.GetNowArrowsNodeObj();
-                    //Debug.Log(nowNodeObj.input.name + ":" + nowNodeObj.output.name);
                 }
             }
         }
@@ -114,11 +112,13 @@ namespace aoji_EditorUI
         void applyButtonAction()
         {
             Debug.Log("apply:まだ実装してないよ");
-            var savePrepare = new SaveBuildePrepare();
-            savePrepare.PrepareSave(_uiBaseGraphView, _edgeDataList);
-            var savebuilder = new TestSaveBuilder_case1(savePrepare);
+            var prepare = new BoardBuilderPrepare_fromEditor();
+            prepare.PrepareSaveBoard(_uiBaseGraphView, _edgeDataList);
+            var savebuilder = new BoardBuilder<MonoTranBoard_test>();
+            savebuilder.PrepareData(prepare);
             var board = savebuilder.CreateBoard();
-            DataSaver.FullSerializSaver.SaveAction(board,"editorSave_test");
+            DataSaver.FullSerializSaver.SaveAction(board, "editorSave_test");
+            
             //savePrepare.TestSetState();
             //savePrepare.TestSetLine();
             //savePrepare.TestSetTerm();

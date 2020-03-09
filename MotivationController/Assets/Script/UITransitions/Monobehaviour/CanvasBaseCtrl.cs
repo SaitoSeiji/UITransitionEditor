@@ -17,15 +17,18 @@ public class CanvasBaseCtrl : BoardMonoBehaviour
     protected override TransitionBoard InitBoard()
     {
         //ボードの作成
-        MonoTranBoard result;
+        MonoTranBoard_test result;
+        var boardBuilder = new BoardBuilder<MonoTranBoard_test>();
         if (initer2.LoadEnable())
         {
-            result = (MonoTranBoard)initer2.CreateBoard();
+            boardBuilder.PrepareData(initer2);
+            result=boardBuilder.CreateBoard();
             Debug.Log("load");
         }
         else
         {
-            result = (MonoTranBoard)initer.CreateBoard();
+            boardBuilder.PrepareData(initer);
+            result = boardBuilder.CreateBoard();
         }
         return result;
     }
@@ -65,14 +68,16 @@ public class CanvasBaseCtrl : BoardMonoBehaviour
     
     UICanvasBase GetCanvasFromState(TransitionState state)
     {
-        MonoTranBoard myBoard = (MonoTranBoard)_tranBoard;
-        return myBoard.GetObject(state).GetComponent<UICanvasBase>();
+        State_UIBase stateNew = (State_UIBase)state;
+        return stateNew.UIBase.GetComponent<UICanvasBase>();
     }
 
     [ContextMenu("save")]
     public void SaveAction()
     {
-        _tranBoard = (MonoTranBoard)initer.CreateBoard();
+        var boardBuilder = new BoardBuilder<MonoTranBoard_test>();
+        boardBuilder.PrepareData(initer);
+        _tranBoard = boardBuilder.CreateBoard();
         FullSerializSaver.SaveAction(_tranBoard, initer.saveKey);
     }
 }
